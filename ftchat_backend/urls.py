@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from ftchat import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/request_verification_code/',views.request_verification_code, name='request_verification_code')
 ]

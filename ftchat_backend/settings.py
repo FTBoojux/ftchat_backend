@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
-from ftchat import databaseConf
+from ftchat import applicationConf
+from ftchat.applicationConf import mail_host, mail_port, mail_password, redis_password, redis_host, redis_port
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
     'ftchat',
 ]
 
@@ -80,10 +81,10 @@ WSGI_APPLICATION = 'ftchat_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': databaseConf.mongo_database,
+        'NAME': applicationConf.mongo_database,
         'CLIENT': {
-            'host': databaseConf.mongo_url,
-            'port': databaseConf.mongo_port
+            'host': applicationConf.mongo_url,
+            'port': applicationConf.mongo_port
             # 'username': databaseConf.mongo_username,
             # 'password': databaseConf.mongo_password
         }
@@ -142,4 +143,21 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.SessionAuthentication',
     #     'rest_framework.authentication.BasicAuthentication',
     # ],
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = mail_host
+EMAIL_PORT = mail_port
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '1647284718'
+EMAIL_HOST_PASSWORD = mail_password
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://:{}@{}:{}/0'.format(redis_password,redis_host,redis_port),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
 }
