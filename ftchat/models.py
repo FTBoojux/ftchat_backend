@@ -4,7 +4,7 @@ from djongo import models
 # Create your models here.
 
 class User(models.Model):
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.CharField(primary_key=True, max_length=64)
     username = models.CharField(max_length=50)
     password = models.CharField(max_length=256)
     email = models.CharField(max_length=50)
@@ -13,8 +13,10 @@ class User(models.Model):
     bio = models.CharField(max_length=256)
     created_at = models.DateTimeField()
     last_login_at = models.DateTimeField()
-    sentiment_analysis_enabled = models.BooleanField()
+    sentiment_analysis_enabled = models.IntegerField()
 
+    def __str__(self):
+        return self.user_id+','+str(self.sentiment_analysis_enabled)
 
 class Message(models.Model):
     message_id = models.IntegerField(primary_key=True)
