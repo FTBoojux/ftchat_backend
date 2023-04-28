@@ -1,6 +1,7 @@
 import datetime
 import json
 import random
+import uuid
 
 import bcrypt
 from django.core.mail import send_mail
@@ -8,12 +9,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_redis import get_redis_connection
-from snowflake import snowflake
 
 from ftchat.models import User
 
 redis_conn = get_redis_connection('default')
-
 
 # Create your views here.
 def send_verification_code(email):
@@ -64,7 +63,7 @@ def register(request):
     hashed_password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
 
     new_user = User(
-        user_id=snowflake(),
+        user_id=uuid.uuid4(),
         username=username,
         password=hashed_password,
         email=email,
@@ -73,7 +72,5 @@ def register(request):
         last_login_at=datetime.datetime.now(),
         sentiment_analysis_enabled=0
     )
-    print(len(new_user.user_id))
-    print(str(new_user))
     new_user.save()
     return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功'})
