@@ -21,5 +21,6 @@ from ftchat import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/request_verification_code/', views.request_verification_code, name='request_verification_code'),
-    path('account/register/',views.register, name='register')
+    path('account/register/',views.register, name='register'),
+    path('account/upload_avatar/',views.upload_avatar, name='upload_avatar')
 ]

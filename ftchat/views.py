@@ -1,18 +1,22 @@
 import datetime
 import json
+import os.path
 import random
 import uuid
 
 import bcrypt
+from PIL import Image
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_redis import get_redis_connection
 
+from ftchat.minio_utils import upload_file_to_minio
 from ftchat.models import User
 
 redis_conn = get_redis_connection('default')
+
 
 # Create your views here.
 def send_verification_code(email):
@@ -60,7 +64,7 @@ def register(request):
     if verify_code != stored_verify_code:
         return JsonResponse({'result': 'fail', 'code': '200', 'message': '验证码错误或已过期！'})
 
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     new_user = User(
         user_id=uuid.uuid4(),
@@ -74,3 +78,24 @@ def register(request):
     )
     new_user.save()
     return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功'})
+
+
+@require_POST
+@csrf_exempt
+def upload_avatar(request):
+    upload_file = request.FILES['avatar']
+    if upload_file.size > 4 * 1024 * 1024:
+        return JsonResponse({'result': 'fail', 'code': 400, 'message': '头像文件必须在4MB以内！'})
+
+    try:
+        Image.open(upload_file)
+    except IOError:
+        return JsonResponse({'result': 'error', 'code': 400, 'message': '非图片格式文件！'})
+
+    file_extension = os.path.splitext(upload_file.name)[1]
+    file_name = f'{str(uuid.uuid4())}{file_extension}'
+    file_path = f'avatar/{file_name}'
+
+    minio_url = upload_file_to_minio('ftchat-avatar', file_name, upload_file,upload_file.content_type)
+    print(upload_file.content_type)
+    return JsonResponse({'result': 'success', 'code': 200, 'message': 'success!', 'data': minio_url})
