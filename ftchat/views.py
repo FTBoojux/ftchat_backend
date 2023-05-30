@@ -2,6 +2,7 @@ import datetime
 import json
 import os.path
 import random
+from typing import Optional
 import uuid
 
 import bcrypt
@@ -37,7 +38,7 @@ def send_verification_code(email):
     redis_conn.setex(f'verification_code_{email}', 600, verification_code)
 
 
-def _validate_email_and_password(email, password) -> User:
+def _validate_email_and_password(email, password) -> Optional[User]:
     try:
         user = User.objects.get(email=email)
     except ObjectDoesNotExist:
@@ -93,7 +94,7 @@ def register(request):
         salt=salt.decode('utf-8')
     )
     new_user.save()
-    return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功'})
+    return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功', 'user': new_user})
 
 
 @require_POST
