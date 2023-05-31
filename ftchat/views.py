@@ -83,7 +83,7 @@ def register(request):
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
     new_user = User(
-        user_id=uuid.uuid4(),
+        user_id=str(uuid.uuid4()),
         username=username,
         password=hashed_password,
         email=email,
@@ -94,7 +94,7 @@ def register(request):
         salt=salt.decode('utf-8')
     )
     new_user.save()
-    return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功', 'user': new_user})
+    return JsonResponse({'result': 'success', 'code': 200, 'message': '用户注册成功'})
 
 
 @require_POST
