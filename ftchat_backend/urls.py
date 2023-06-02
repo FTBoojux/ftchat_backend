@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from ftchat import views
+from ftchat.views import base_views as views 
 
 urlpatterns = [
     path('admin/', admin.site.urls),

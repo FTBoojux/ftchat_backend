@@ -1,1 +1,1 @@
-from base_view import *
+from ftchat.views.base_views import *
