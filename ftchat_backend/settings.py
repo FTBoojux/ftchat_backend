@@ -80,14 +80,12 @@ WSGI_APPLICATION = 'ftchat_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': applicationConf.mongo_database,
-        'CLIENT': {
-            'host': applicationConf.mongo_url,
-            'port': applicationConf.mongo_port
-            # 'username': databaseConf.mongo_username,
-            # 'password': databaseConf.mongo_password
-        }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ftchat',
+        'USER': 'root',
+        'PASSWORD': 'BoojuxMysql',
+        'HOST': '47.98.97.181',  # 例如 'localhost' 或者是远程服务器 IP
+        'PORT': '3306',  # 默认是 3306
     }
 }
 

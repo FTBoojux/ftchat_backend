@@ -1,5 +1,5 @@
-from djongo import models
-from django.db import models as django_models
+# from djongo import models
+from django.db import models
 
 
 # Create your models here.
@@ -17,7 +17,6 @@ class User(models.Model):
     sentiment_analysis_enabled = models.IntegerField()
     salt = models.CharField(max_length=256)
 
-    objects = django_models.Manager()
     def __str__(self):
         return self.user_id+','+str(self.sentiment_analysis_enabled)
 
