@@ -6,3 +6,4 @@ ftchat_backend/__pycache__/*
 .vscode/*
 ftchat/views/__pycache__/*
 ftchat/migrations/*
+ftchat/utils/__pycache__/*
