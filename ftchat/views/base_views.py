@@ -16,7 +16,7 @@ from django.views.decorators.http import require_POST
 from django_redis import get_redis_connection
 
 from ftchat.applicationConf import jwt_security_key
-from ftchat.minio_utils import upload_file_to_minio
+from ftchat.utils.minio_utils import upload_file_to_minio
 from ftchat.models import User
 
 redis_conn = get_redis_connection('default')
