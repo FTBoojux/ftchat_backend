@@ -4,4 +4,4 @@
 
 本项目基于Django框架设计和开发。
 
-对应的前端程序：[FTChat-backend](https://github.com/FTBoojux/ftchat_backend)
+对应的前端程序：[FTChat](https://github.com/FTBoojux/ftchat)
