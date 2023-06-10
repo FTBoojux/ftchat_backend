@@ -17,6 +17,10 @@ class User(models.Model):
     sentiment_analysis_enabled = models.IntegerField()
     salt = models.CharField(max_length=256)
 
+    @property
+    def is_authenticated(self):
+        return True
+
     def __str__(self):
         return self.user_id+','+str(self.sentiment_analysis_enabled)
 
