@@ -26,5 +26,6 @@ urlpatterns = [
     path('account/upload_avatar/',views.upload_avatar, name='upload_avatar'),
     path('account/login/',views.login,name='login'),
     path('gpt/chat/',chat_gpt_views.chat_to_gpt,name='chat_gpt'),
-    path('account/friends/',account_views.UserInfoForAddView.as_view(),name='user'),
+    path('account/friends/',account_views.UserInfoForAddView.as_view(),name='friends'),
+    path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
 ]

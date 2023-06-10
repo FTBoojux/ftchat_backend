@@ -10,4 +10,13 @@ class UserInfoForAddView(View):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         users = account_service.search_contact(uid,keyword)
-        return JsonResponse({'result':'success','message':'','code':200,'data':list(users)})
+        return JsonResponse({'result':'success','message':'','code':200,'data':users})
+    
+class UserInfoForAddedView(View):
+    def get(self,request,*args,**kwargs):
+        keyword = request.GET.get('keyword')
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        users = account_service.search_stranger(uid,keyword)
+        return JsonResponse({'result':'success','message':'','code':200,'data':users})

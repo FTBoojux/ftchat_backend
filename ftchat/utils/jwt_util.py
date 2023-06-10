@@ -1,8 +1,9 @@
 import jwt
+from ftchat.applicationConf import jwt_security_key
 
 def get_value_from_jwt(jwt_token, key):
     try:
-        decoded_token = jwt.decode(jwt_token, verify=False)
+        decoded_token = jwt.decode(jwt_token, jwt_security_key, algorithms='HS256')
         return decoded_token.get(key)
     except jwt.InvalidTokenError:
         return None
