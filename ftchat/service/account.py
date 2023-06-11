@@ -17,6 +17,7 @@ def search_contact(user_id,keyword):
             INNER JOIN ftchat_contact ON ftchat_contact.friend = ftchat_user.user_id
             AND ftchat_contact.user = %s 
             WHERE user_id != %s 
+            AND user_id != 1
             AND username LIKE %s
         """, [user_id, user_id, '%' + keyword + '%'])
         rows = cursor.fetchall()
@@ -33,7 +34,9 @@ def search_stranger(user_id,keyword):
             FROM ftchat_user 
             LEFT JOIN ftchat_contact ON ftchat_contact.friend = ftchat_user.user_id
             AND ftchat_contact.user != %s
-            WHERE user_id != %s
+            WHERE 
+            user_id != %s
+            AND user_id != 1
             AND username LIKE %s
         """, [user_id, user_id, '%' + keyword + '%'])
         rows = cursor.fetchall()
