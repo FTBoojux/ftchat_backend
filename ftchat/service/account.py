@@ -1,5 +1,6 @@
 from ftchat.models import User
 from ftchat.models import Contact
+from ftchat.models import ContactRequest
 
 from django.db.models import Q
 from django.db import connection
@@ -43,3 +44,15 @@ def search_stranger(user_id,keyword):
     column_names = [col[0] for col in cursor.description]
     results = [dict(zip(column_names, row)) for row in rows]
     return results
+
+def add_contact(uid, target, message):
+    if ContactRequest.objects.filter(requester=uid, receiver=target).exists():
+        return "请勿重复添加!"
+    else:
+        ContactRequest.objects.create(
+            requester=uid,
+            receiver=target,
+            message=message
+        )
+        return "已发送申请!"
+

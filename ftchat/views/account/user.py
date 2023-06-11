@@ -21,3 +21,13 @@ class UserInfoForAddedView(AuthenticateView):
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         users = account_service.search_stranger(uid,keyword)
         return JsonResponse({'result':'success','message':'','code':200,'data':users})
+    
+class AddContactView(AuthenticateView):
+    def post(self,request,*args,**kwargs):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        target = request.data.get('target')
+        message = request.data.get('message')
+        res = account_service.add_contact(uid,target,message)
+        return JsonResponse({'result':'success','message':'','code':200,'data':res})

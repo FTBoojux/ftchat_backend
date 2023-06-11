@@ -28,4 +28,5 @@ urlpatterns = [
     path('gpt/chat/',chat_gpt_views.chat_to_gpt,name='chat_gpt'),
     path('account/friends/',account_views.UserInfoForAddView.as_view(),name='friends'),
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
+    path('account/contact/',account_views.AddContactView.as_view(),name='add_friend'),
 ]
