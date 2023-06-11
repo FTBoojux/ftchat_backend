@@ -60,3 +60,26 @@ class GroupMember(models.Model):
     nickname = models.CharField(max_length=50)
     joined_at = models.DateTimeField()
     role = models.CharField(max_length=50)
+
+
+class ContactRequest(models.Model):
+    request_id = models.AutoField(primary_key=True)
+    requester = models.CharField(max_length=64)
+    receiver = models.CharField(max_length=64)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    message = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Pending'),
+            ('accepted', 'Accepted'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending',
+    )
+
+    class Meta:
+        unique_together = (('requester', 'receiver'), )
+
+    def __str__(self):
+        return f'Request from {self.requester} to {self.receiver} - Status: {self.status}'
