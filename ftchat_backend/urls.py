@@ -19,15 +19,17 @@ from django.urls import path
 from ftchat.views import base_views as views 
 from ftchat.views import chat_gpt as chat_gpt_views
 from ftchat.views.account import user as account_views
+from ftchat.views.gpt import gpt_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/request_verification_code/', views.request_verification_code, name='request_verification_code'),
     path('account/register/',views.register, name='register'),
     path('account/upload_avatar/',views.upload_avatar, name='upload_avatar'),
     path('account/login/',views.login,name='login'),
-    path('gpt/chat/',chat_gpt_views.chat_to_gpt,name='chat_gpt'),
     path('account/friends/',account_views.UserInfoForAddView.as_view(),name='friends'),
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
     path('account/contact/',account_views.AddContactView.as_view(),name='add_friend'),
     path('account/logout/',account_views.LogoutView.as_view(),name='logout'),
+    path('gpt/chat/',chat_gpt_views.chat_to_gpt,name='chat_gpt'),
+    path('gpt/conversation/',gpt_views.ConversationCreateView.as_view(),name='conversation_create')
 ]

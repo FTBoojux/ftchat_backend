@@ -83,3 +83,12 @@ class ContactRequest(models.Model):
 
     def __str__(self):
         return f'Request from {self.requester} to {self.receiver} - Status: {self.status}'
+
+class GptConversation(models.Model):
+    conversation_id = models.AutoField(primary_key=True)
+    title=models.CharField(max_length=64)
+    user_id = models.CharField(max_length=64)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Conversation from {self.user} - Status: {self.status}'
