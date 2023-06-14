@@ -18,7 +18,7 @@ from django_redis import get_redis_connection
 from ftchat.applicationConf import jwt_security_key
 from ftchat.utils.minio_utils import upload_file_to_minio
 from ftchat.models import User
-
+import ftchat.utils.redis_utils as redis_utils
 redis_conn = get_redis_connection('default')
 
 
@@ -127,9 +127,12 @@ def login(request):
     user = _validate_email_and_password(email, password)
     if user is not None:
         payload = {
-            'user_id': str(user.user_id)
+            'user_id': str(user.user_id),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+            'iat': datetime.datetime.utcnow()
         }
         access_token = jwt.encode(payload,jwt_security_key,algorithm='HS256')
+        redis_utils.token_add(str(user.user_id), access_token)
         response_data = {
             'result': 'success',
             'code': 200,
