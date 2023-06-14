@@ -29,4 +29,5 @@ urlpatterns = [
     path('account/friends/',account_views.UserInfoForAddView.as_view(),name='friends'),
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
     path('account/contact/',account_views.AddContactView.as_view(),name='add_friend'),
+    path('account/logout/',account_views.LogoutView.as_view(),name='logout'),
 ]

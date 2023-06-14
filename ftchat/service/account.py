@@ -1,6 +1,7 @@
 from ftchat.models import User
 from ftchat.models import Contact
 from ftchat.models import ContactRequest
+import ftchat.utils.redis_utils as redis_utils
 
 from django.db.models import Q
 from django.db import connection
@@ -56,3 +57,7 @@ def add_contact(uid, target, message):
         )
         return "已发送申请!"
 
+def logout(uid,token):
+    if User.objects.filter(user_id=uid).exists():
+        redis_utils.token_delete(uid,token)
+    return "已登出!"
