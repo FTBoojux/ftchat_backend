@@ -31,5 +31,5 @@ urlpatterns = [
     path('account/contact/',account_views.AddContactView.as_view(),name='add_friend'),
     path('account/logout/',account_views.LogoutView.as_view(),name='logout'),
     path('gpt/chat/',chat_gpt_views.chat_to_gpt,name='chat_gpt'),
-    path('gpt/conversation/',gpt_views.ConversationCreateView.as_view(),name='conversation_create')
+    path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create')
 ]
