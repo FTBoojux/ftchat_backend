@@ -11,7 +11,7 @@ class ConversationView(AuthenticateView):
         title = request.data.get('title')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         res = gpt_conversation_service.create_conversation(uid,title)
-        return JsonResponse({'result':'suc cess','message':'','code':200,'data':res})
+        return JsonResponse({'result':'success','message':'','code':200,'data':res})
     def get(self,request,*args,**kwargs):
         # 获取header中的token
         token = request.META.get('HTTP_AUTHORIZATION')

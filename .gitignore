@@ -9,3 +9,4 @@ ftchat/migrations/*
 ftchat/utils/__pycache__/*
 ftchat/service/__pycache__/*
 ftchat/views/account/__pycache__/*
+ftchat/views/gpt/__pycache__/*
