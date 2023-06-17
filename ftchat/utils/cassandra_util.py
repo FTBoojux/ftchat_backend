@@ -15,9 +15,15 @@ session.execute("USE ftchat;")
 
 
 
-def save_message(content, sender, receiver):
+def save_message(content, sender, receiver, conversation_id):
     # 创建一个唯一的message_id和时间戳
-    message_id = str(uuid.uuid4()) 
+    message_id = str(uuid.uuid4())
+    # 把sender和receiver的顺序固定下来，这样就可以保证每个会话的唯一性
+    # 给sender和receiver排序，然后把它们拼接起来作为srkey
+    if sender > receiver:
+        srkey = receiver + sender
+    else:
+        srkey = sender+receiver
     send_at = datetime.now()
     read = False  # 假设消息刚被创建时尚未读
     sentiment_analysis_result = None  # 根据你的需要填写情感分析结果
@@ -25,8 +31,24 @@ def save_message(content, sender, receiver):
     # 插入新的记录
     session.execute(
         """
-        INSERT INTO gpt_message (message_id, sender, receiver, content_type, content, send_at, read, sentiment_analysis_result)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO gpt_message (message_id, conversation_id, srkey, sender, receiver, content_type, content, send_at, read, sentiment_analysis_result)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
-        (message_id, sender, receiver, 1, content, send_at, read, sentiment_analysis_result)
+        (message_id, conversation_id, srkey, sender, receiver, 1, content, send_at, read, sentiment_analysis_result)
     )
+
+def get_message_list(sender, receiver, conversation_id):
+    if sender > receiver:
+        srkey = receiver + sender
+    else:
+        srkey = sender+receiver
+    rows = session.execute(
+        """
+        SELECT message_id, sender , content
+        FROM gpt_message
+        WHERE conversation_id = %s AND srkey = %s
+        ORDER BY send_at ASC
+        """,
+        (conversation_id, srkey)
+    )
+    return rows

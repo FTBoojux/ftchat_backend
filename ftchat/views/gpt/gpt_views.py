@@ -41,7 +41,9 @@ class GptConversation(AuthenticateView):
         # model_choosed = data.get('model', 'gpt-3.5-turbo')
         model = model_table.get(model_choosed, 'gpt-3.5-turbo')
         msg = request.data.get('message', '')
-        cassandra_util.save_message(content=msg,sender=uid,receiver='1')
+        conversation_id = request.data.get('conversation_id')
+        cid_str = str(conversation_id)
+        cassandra_util.save_message(content=msg,sender=uid,receiver='1',conversation_id=cid_str)
         if not msg:
             return JsonResponse({'result': 'error', 'message': 'msg is required', 'code': 200})
         try:
@@ -49,9 +51,19 @@ class GptConversation(AuthenticateView):
             # 取result['choices'][0]['message']['content']的值
             result_content = result['choices'][0]['message']['content']
             print(result_content)
-            cassandra_util.save_message(content=result_content,sender='1',receiver=uid)
+            cassandra_util.save_message(content=result_content,sender='1',receiver=uid,conversation_id=cid_str)
             return JsonResponse({'result': 'success', 'message': result_content, 'code': 200})
         except Exception as e:
             # 控制台打印错误
             print(e)
             return JsonResponse({'result': 'error', 'message': '发送失败，请重试', 'code': 200})
+        
+    def get(self,request,*args,**kwargs):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        conversation_id = request.data.get('conversation_id')
+        rows = cassandra_util.get_message_list(uid,'1',str(conversation_id))
+        # 把查询结果转换成列表
+        result = [{'role':'bot' if row.sender == '1' else 'user','content':row.content} for row in rows]
+        return JsonResponse({'result':'success','message':'','code':200,'data':result})
