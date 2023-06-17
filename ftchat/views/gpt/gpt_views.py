@@ -62,7 +62,8 @@ class GptConversation(AuthenticateView):
         # 获取header中的token
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
-        conversation_id = request.data.get('conversation_id')
+        conversation_id = request.GET.get('conversation_id')
+        
         rows = cassandra_util.get_message_list(uid,'1',str(conversation_id))
         # 把查询结果转换成列表
         result = [{'role':'bot' if row.sender == '1' else 'user','content':row.content} for row in rows]
