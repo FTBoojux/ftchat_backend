@@ -91,4 +91,4 @@ class GptConversation(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Conversation from {self.user} - Status: {self.status}'
+        return f'Conversation from {self.user_id}'
