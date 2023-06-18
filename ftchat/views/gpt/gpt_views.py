@@ -1,5 +1,7 @@
 from ftchat.views.AuthenticateView import AuthenticateView
 from django.http import JsonResponse
+import base64
+
 from ftchat.utils import jwt_util as jwt_utils
 from ftchat.service import gpt_conversation as gpt_conversation_service
 import ftchat.utils.openai_util as openai_util
@@ -59,12 +61,16 @@ class GptConversation(AuthenticateView):
             return JsonResponse({'result': 'error', 'message': '发送失败，请重试', 'code': 200})
         
     def get(self,request,*args,**kwargs):
-        # 获取header中的token
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         conversation_id = request.GET.get('conversation_id')
-        
-        rows = cassandra_util.get_message_list(uid,'1',str(conversation_id))
-        # 把查询结果转换成列表
-        result = [{'role':'bot' if row.sender == '1' else 'user','content':row.content} for row in rows]
-        return JsonResponse({'result':'success','message':'','code':200,'data':result})
+        paging_state = request.GET.get('paging_state')
+        if paging_state is not None:
+            paging_state = base64.b64decode(paging_state)
+
+        rows, next_paging_state = cassandra_util.get_message_list(uid, '1', str(conversation_id), paging_state=paging_state)
+
+        if next_paging_state is not None:
+            next_paging_state = base64.b64encode(next_paging_state).decode()
+        result = [{'role':'bot' if row.sender == '1' else 'user','content':row.content} for row in rows][::-1]
+        return JsonResponse({'result':'success','message':'','code':200,'data':result, 'next_paging_state': next_paging_state})

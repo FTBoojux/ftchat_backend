@@ -2,6 +2,7 @@ from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 import uuid
 from datetime import datetime
+from cassandra.query import SimpleStatement
 
 from ftchat.applicationConf import cassandra_host, cassandra_port, cassandra_username, cassandra_password
 
@@ -37,18 +38,25 @@ def save_message(content, sender, receiver, conversation_id):
         (message_id, conversation_id, srkey, sender, receiver, 1, content, send_at, read, sentiment_analysis_result)
     )
 
-def get_message_list(sender, receiver, conversation_id):
+def get_message_list(sender, receiver, conversation_id, page_size=10, paging_state=None):
     if sender > receiver:
         srkey = receiver + sender
     else:
-        srkey = sender+receiver
-    rows = session.execute(
+        srkey = sender + receiver
+
+    statement = SimpleStatement(
         """
         SELECT message_id, sender , content
         FROM gpt_message
         WHERE conversation_id = %s AND srkey = %s
-        ORDER BY send_at ASC
+        ORDER BY send_at DESC
         """,
-        (conversation_id, srkey)
+        fetch_size=page_size
     )
-    return rows
+
+    result_set = session.execute(statement, (conversation_id, srkey), paging_state=paging_state)
+
+    rows = result_set.current_rows
+    next_paging_state = result_set.paging_state
+
+    return rows, next_paging_state
