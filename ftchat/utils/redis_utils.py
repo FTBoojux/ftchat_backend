@@ -19,7 +19,10 @@ redis.call('rpush', KEYS[1], ARGV[#ARGV])
 update_token_script = redis_client.register_script(lua_script)
 
 def is_token_expired(token):
-    decoded = jwt.decode(token,conf.jwt_security_key,algorithms='HS256')
+    try:
+        decoded = jwt.decode(token,conf.jwt_security_key,algorithms='HS256')
+    except jwt.exceptions.ExpiredSignatureError:
+        return True
     expiration_date = datetime.utcfromtimestamp(decoded['exp'])
     return expiration_date < datetime.utcnow()
 
