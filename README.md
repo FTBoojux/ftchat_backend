@@ -6,4 +6,4 @@
 
 对应的前端程序：[FTChat](https://github.com/FTBoojux/ftchat)
 
-对应的实时聊天模块：[FTChat-channel](https://github.com/FTBoojux/ftchat_channel)
+对应的实时聊天模块：[FTChat-channel](https://github.com/FTBoojux/ftchat-channel)
