@@ -7,3 +7,9 @@
 对应的前端程序：[FTChat](https://github.com/FTBoojux/ftchat)
 
 对应的实时聊天模块：[FTChat-channel](https://github.com/FTBoojux/ftchat-channel)
+
+## 开发日志
+
+### 2023-06-24
+
+引入RabbitMQ，经过验证放弃了Celery，改用Pika。
