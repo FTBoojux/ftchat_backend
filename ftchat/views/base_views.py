@@ -14,12 +14,19 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_redis import get_redis_connection
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import base64
+import binascii
 
 from ftchat.applicationConf import jwt_security_key
+from ftchat.applicationConf import ftchat_iv
+from ftchat.applicationConf import ftchat_key
 from ftchat.utils.minio_utils import upload_file_to_minio
 from ftchat.models import User
 import ftchat.utils.redis_utils as redis_utils
 redis_conn = get_redis_connection('default')
+
 
 
 # Create your views here.
@@ -49,6 +56,16 @@ def _validate_email_and_password(email, password) -> Optional[User]:
     else:
         return user
 
+def hex_to_bytes(hex_string):
+    return binascii.unhexlify(hex_string)
+
+def base64_to_bytes(base64_string):
+    return base64.b64decode(base64_string)
+
+def decrypt(encrypted_data):
+    cipher = AES.new(ftchat_key, AES.MODE_CBC, ftchat_iv)
+    decrypted_data = unpad(cipher.decrypt(encrypted_data), AES.block_size)
+    return decrypted_data.decode("utf-8")
 
 @require_POST
 @csrf_exempt
@@ -124,6 +141,7 @@ def login(request):
     data = json.load(request)
     email: str = data.get('email')
     password: str = data.get('password')
+    password = decrypt(base64_to_bytes(password))
     user = _validate_email_and_password(email, password)
     if user is not None:
         payload = {
