@@ -61,3 +61,9 @@ def logout(uid,token):
     if User.objects.filter(user_id=uid).exists():
         redis_utils.token_delete(uid,token)
     return "已登出!"
+
+def get_avatar(uid):
+    if User.objects.filter(user_id=uid).exists():
+        return User.objects.filter(user_id=uid).values('avatar')[0]['avatar']
+    else:
+        return None

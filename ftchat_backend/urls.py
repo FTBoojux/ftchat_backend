@@ -30,6 +30,7 @@ urlpatterns = [
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
     path('account/contact/',account_views.AddContactView.as_view(),name='add_friend'),
     path('account/logout/',account_views.LogoutView.as_view(),name='logout'),
+    path('account/avatar/',account_views.AvatarView.as_view(),name='avatar'),
     path('gpt/chat/',gpt_views.GptConversation.as_view(),name='chat_gpt'),
     path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create')
 ]

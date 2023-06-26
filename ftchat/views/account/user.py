@@ -40,3 +40,9 @@ class LogoutView(AuthenticateView):
         uid = jwt_utils.get_uid_from_jwt(token)
         res = account_service.logout(uid,token)
         return JsonResponse({'result':'success','message':'','code':200,'data':res})
+    
+class AvatarView(AuthenticateView):
+    def get(self,request,*args,**kwargs):
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(request.META.get('HTTP_AUTHORIZATION')))
+        res = account_service.get_avatar(uid)
+        return JsonResponse({'result':'success','message':'','code':200,'data':res})
