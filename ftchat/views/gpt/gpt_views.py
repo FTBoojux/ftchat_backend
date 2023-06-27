@@ -58,6 +58,7 @@ class GptConversation(AuthenticateView):
         except Exception as e:
             # 控制台打印错误
             print(e)
+            cassandra_util.save_message(content=str(e),sender='1',receiver=uid,conversation_id=cid_str)
             return JsonResponse({'result': 'error', 'message': '发送失败，请重试', 'code': 200})
         
     def get(self,request,*args,**kwargs):
