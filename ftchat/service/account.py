@@ -67,3 +67,20 @@ def get_avatar(uid):
         return User.objects.filter(user_id=uid).values('avatar')[0]['avatar']
     else:
         return None
+
+def save_contact_request(uid, target, message):
+    if ContactRequest.objects.filter(requester=uid, receiver=target).exists():
+        return False
+    else:
+        ContactRequest.objects.create(
+            requester=uid,
+            receiver=target,
+            message=message
+        )
+        return True
+    
+def get_user_info(uid):
+    if User.objects.filter(user_id=uid).exists():
+        return User.objects.filter(user_id=uid).values('username', 'avatar', 'bio', 'sentiment_analysis_enabled')[0]
+    else:
+        return None
