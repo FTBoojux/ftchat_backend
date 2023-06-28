@@ -96,3 +96,9 @@ def update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled):
         return True
     else:
         return False
+    
+def get_contact_requests(uid):
+    if ContactRequest.objects.filter(receiver=uid).exists():
+        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp').order_by('timestamp')) 
+    else:
+        return []

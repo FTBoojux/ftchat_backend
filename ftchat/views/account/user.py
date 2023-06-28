@@ -3,6 +3,7 @@ import ftchat.utils.jwt_util as jwt_utils
 import ftchat.service.account as account_service
 from django.http import JsonResponse
 from ftchat.views.AuthenticateView import AuthenticateView
+from ftchat.models import User
 
 class UserInfoForAddView(AuthenticateView):
     def get(self,request,*args,**kwargs):
@@ -31,7 +32,17 @@ class AddContactView(AuthenticateView):
         message = request.data.get('message')
         res,msg = account_service.add_contact(uid,target,message)
         return JsonResponse({'result':'success','message':'','code':200,'data':{'res':res,'msg':msg}})
-    
+    def get(self,request,*args,**kwargs):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        res = account_service.get_contact_requests(uid)
+        for user in res:
+            requester = User.objects.get(user_id=user['requester'])
+            user['username'] = requester.username
+            user['avatar'] = requester.avatar
+        return JsonResponse({'result':'success','message':'','code':200,'data':res})
+
 class LogoutView(AuthenticateView):
     def post(self,request,*args,**kwargs):
         # 获取header中的token
