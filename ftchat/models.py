@@ -78,9 +78,6 @@ class ContactRequest(models.Model):
         default='pending',
     )
 
-    class Meta:
-        unique_together = (('requester', 'receiver'), )
-
     def __str__(self):
         return f'Request from {self.requester} to {self.receiver} - Status: {self.status}'
 

@@ -47,15 +47,12 @@ def search_stranger(user_id,keyword):
     return results
 
 def add_contact(uid, target, message):
-    if ContactRequest.objects.filter(requester=uid, receiver=target).exists():
-        return False,"请勿重复添加!"
-    else:
-        ContactRequest.objects.create(
-            requester=uid,
-            receiver=target,
-            message=message
-        )
-        return True,"已发送申请!"
+    ContactRequest.objects.create(
+        requester=uid,
+        receiver=target,
+        message=message
+    )
+    return True,"已发送申请!"
 
 def logout(uid,token):
     if User.objects.filter(user_id=uid).exists():
@@ -99,6 +96,6 @@ def update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled):
     
 def get_contact_requests(uid):
     if ContactRequest.objects.filter(receiver=uid).exists():
-        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp').order_by('timestamp')) 
+        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp', 'status').order_by('timestamp')) 
     else:
         return []

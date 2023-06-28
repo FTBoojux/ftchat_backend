@@ -4,6 +4,7 @@ import ftchat.service.account as account_service
 from django.http import JsonResponse
 from ftchat.views.AuthenticateView import AuthenticateView
 from ftchat.models import User
+from ftchat.utils.redis_utils import redis_client
 
 class UserInfoForAddView(AuthenticateView):
     def get(self,request,*args,**kwargs):
@@ -29,9 +30,16 @@ class AddContactView(AuthenticateView):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         target = request.data.get('target')
-        message = request.data.get('message')
-        res,msg = account_service.add_contact(uid,target,message)
-        return JsonResponse({'result':'success','message':'','code':200,'data':{'res':res,'msg':msg}})
+        redis_key = "cadd:"+uid+target
+        cadd = redis_client.get(redis_key)
+        if cadd is not None:
+            return JsonResponse({'result':'success','message':'','code':200,'data':{'res':False,'msg':'请勿频繁重复添加!'}})
+        else:
+            # 过期时间一天
+            redis_client.set(redis_key,1,86400)
+            message = request.data.get('message')
+            res,msg = account_service.add_contact(uid,target,message)
+            return JsonResponse({'result':'success','message':'','code':200,'data':{'res':res,'msg':msg}})
     def get(self,request,*args,**kwargs):
         # 获取header中的token
         token = request.META.get('HTTP_AUTHORIZATION')
