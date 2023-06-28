@@ -20,6 +20,8 @@ from ftchat.views import base_views as views
 from ftchat.views import chat_gpt as chat_gpt_views
 from ftchat.views.account import user as account_views
 from ftchat.views.gpt import gpt_views
+from ftchat.views.message import message_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/request_verification_code/', views.request_verification_code, name='request_verification_code'),
@@ -33,5 +35,6 @@ urlpatterns = [
     path('account/avatar/',account_views.AvatarView.as_view(),name='avatar'),
     path('account/user_info/',account_views.UserInfoForEditView.as_view(),name='user_info'),
     path('gpt/chat/',gpt_views.GptConversation.as_view(),name='chat_gpt'),
-    path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create')
+    path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create'),
+    path('message/new_message_num/',message_views.MessageNums.as_view(),name='new_message_num'),
 ]
