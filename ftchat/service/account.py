@@ -48,14 +48,14 @@ def search_stranger(user_id,keyword):
 
 def add_contact(uid, target, message):
     if ContactRequest.objects.filter(requester=uid, receiver=target).exists():
-        return "请勿重复添加!"
+        return False,"请勿重复添加!"
     else:
         ContactRequest.objects.create(
             requester=uid,
             receiver=target,
             message=message
         )
-        return "已发送申请!"
+        return True,"已发送申请!"
 
 def logout(uid,token):
     if User.objects.filter(user_id=uid).exists():

@@ -29,8 +29,8 @@ class AddContactView(AuthenticateView):
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         target = request.data.get('target')
         message = request.data.get('message')
-        res = account_service.add_contact(uid,target,message)
-        return JsonResponse({'result':'success','message':'','code':200,'data':res})
+        res,msg = account_service.add_contact(uid,target,message)
+        return JsonResponse({'result':'success','message':'','code':200,'data':{'res':res,'msg':msg}})
     
 class LogoutView(AuthenticateView):
     def post(self,request,*args,**kwargs):
