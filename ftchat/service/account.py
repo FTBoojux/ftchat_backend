@@ -47,6 +47,8 @@ def search_stranger(user_id,keyword):
     return results
 
 def add_contact(uid, target, message):
+    if Contact.objects.filter(user=uid, friend=target).exists():
+        return False,"已经是好友!"
     ContactRequest.objects.create(
         requester=uid,
         receiver=target,
