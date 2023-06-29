@@ -46,7 +46,7 @@ def search_stranger(user_id,keyword):
     results = [dict(zip(column_names, row)) for row in rows]
     return results
 
-def add_contact(uid, target, message):
+def save_contact_request(uid, target, message):
     if Contact.objects.filter(user=uid, friend=target).exists():
         return False,"已经是好友!"
     ContactRequest.objects.create(
@@ -66,17 +66,6 @@ def get_avatar(uid):
         return User.objects.filter(user_id=uid).values('avatar')[0]['avatar']
     else:
         return None
-
-def save_contact_request(uid, target, message):
-    if ContactRequest.objects.filter(requester=uid, receiver=target).exists():
-        return False
-    else:
-        ContactRequest.objects.create(
-            requester=uid,
-            receiver=target,
-            message=message
-        )
-        return True
     
 def get_user_info(uid):
     if User.objects.filter(user_id=uid).exists():
@@ -97,7 +86,25 @@ def update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled):
         return False
     
 def get_contact_requests(uid):
-    if ContactRequest.objects.filter(receiver=uid).exists():
-        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp', 'status').order_by('timestamp')) 
+    if ContactRequest.objects.filter(receiver=uid,status="pending").exists():
+        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp', 'status').order_by('-timestamp')) 
     else:
         return []
+    
+def add_contact(uid1,uid2):
+    if Contact.objects.filter(user=uid1, friend=uid2).exists():
+        return False,"已经是好友!"
+    Contact.objects.create(
+        user=uid1,
+        friend=uid2
+    )
+    Contact.objects.create(
+        user=uid2,
+        friend=uid1
+    )
+    ContactRequest.objects.filter(requester=uid2, receiver=uid1).update(status='accepted')
+    return True,"已添加好友!"
+
+def reject_contact_request(uid1,uid2):
+    ContactRequest.objects.filter(requester=uid2, receiver=uid1).update(status='rejected')
+    return "已拒绝!"

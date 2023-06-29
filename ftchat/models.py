@@ -36,12 +36,12 @@ class Message(models.Model):
 
 
 class Contact(models.Model):
-    contact_id = models.IntegerField(primary_key=True)
-    user = models.IntegerField()
-    friend = models.IntegerField()
+    contact_id = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=64)
+    friend = models.CharField(max_length=64)
     remark = models.CharField(max_length=50, null=True)
     group = models.CharField(max_length=50, null=True)
-    added_at = models.DateTimeField()
+    added_at = models.DateTimeField(auto_now_add=True)
 
 
 class Group(models.Model):

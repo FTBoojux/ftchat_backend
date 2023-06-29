@@ -6,7 +6,7 @@ from ftchat.views.AuthenticateView import AuthenticateView
 from ftchat.models import User
 from ftchat.utils.redis_utils import redis_client
 
-class UserInfoForAddView(AuthenticateView):
+class ContactView(AuthenticateView):
     def get(self,request,*args,**kwargs):
         keyword = request.GET.get('keyword')
         # 获取header中的token
@@ -14,6 +14,14 @@ class UserInfoForAddView(AuthenticateView):
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         users = account_service.search_contact(uid,keyword)
         return JsonResponse({'result':'success','message':'','code':200,'data':users})
+    def post(self,request,*args,**kwargs):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        contact_id = request.data.get('target')
+        account_service.add_contact(uid,contact_id)
+        return JsonResponse({'result':'success','message':'添加成功！','code':200,'data':''})
+
     
 class UserInfoForAddedView(AuthenticateView):
     def get(self,request,*args,**kwargs):
@@ -38,7 +46,7 @@ class AddContactView(AuthenticateView):
             # 过期时间一天
             redis_client.set(redis_key,1,86400)
             message = request.data.get('message')
-            res,msg = account_service.add_contact(uid,target,message)
+            res,msg = account_service.save_contact_request(uid,target,message)
             return JsonResponse({'result':'success','message':'','code':200,'data':{'res':res,'msg':msg}})
     def get(self,request,*args,**kwargs):
         # 获取header中的token
@@ -50,6 +58,13 @@ class AddContactView(AuthenticateView):
             user['username'] = requester.username
             user['avatar'] = requester.avatar
         return JsonResponse({'result':'success','message':'','code':200,'data':res})
+    def delete(self,request,*args,**kwargs):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        target = request.data.get('target')
+        account_service.reject_contact_request(uid,target)
+        return JsonResponse({'result':'success','message':'已拒绝！','code':200,'data':''})
 
 class LogoutView(AuthenticateView):
     def post(self,request,*args,**kwargs):
