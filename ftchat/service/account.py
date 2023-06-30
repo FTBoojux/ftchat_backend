@@ -104,3 +104,8 @@ def add_contact(uid1,uid2):
 def reject_contact_request(uid1,uid2):
     ContactRequest.objects.filter(requester=uid2, receiver=uid1).update(status='rejected')
     return "已拒绝!"
+
+def delete_contact(uid1,uid2):
+    Contact.objects.filter(user=uid1, friend=uid2).delete()
+    Contact.objects.filter(user=uid2, friend=uid1).delete()
+    return "已删除!"

@@ -29,6 +29,7 @@ urlpatterns = [
     path('account/upload_avatar/',views.upload_avatar, name='upload_avatar'),
     path('account/login/',views.login,name='login'),
     path('account/contacts/',account_views.ContactView.as_view(),name='friends'),
+    path('account/contacts/<str:user_id>/',account_views.ContactView.as_view(),name='friends'),
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),
     path('account/contact_add/',account_views.AddContactView.as_view(),name='add_friend'),
     path('account/logout/',account_views.LogoutView.as_view(),name='logout'),

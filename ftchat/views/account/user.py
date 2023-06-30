@@ -21,6 +21,12 @@ class ContactView(AuthenticateView):
         contact_id = request.data.get('target')
         account_service.add_contact(uid,contact_id)
         return JsonResponse({'result':'success','message':'添加成功！','code':200,'data':''})
+    def delete(self,request,user_id):
+        # 获取header中的token
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        account_service.delete_contact(uid,user_id)
+        return JsonResponse({'result':'success','message':'删除成功！','code':200,'data':''})
 
     
 class UserInfoForAddedView(AuthenticateView):
@@ -38,7 +44,7 @@ class AddContactView(AuthenticateView):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         target = request.data.get('target')
-        redis_key = "cadd:"+uid+target
+        redis_key = f"cadd:{uid}{target}"
         cadd = redis_client.get(redis_key)
         if cadd is not None:
             return JsonResponse({'result':'success','message':'','code':200,'data':{'res':False,'msg':'请勿频繁重复添加!'}})
