@@ -47,7 +47,7 @@ class Contact(models.Model):
 class Group(models.Model):
     group_id = models.IntegerField(primary_key=True)
     group_name = models.CharField(max_length=50)
-    owner = models.IntegerField()
+    owner = models.CharField(max_length=64)
     created_at = models.DateTimeField()
     announcement = models.CharField(max_length=256, null=True)
     avatar = models.CharField(max_length=256, null=True)
@@ -56,7 +56,7 @@ class Group(models.Model):
 class GroupMember(models.Model):
     member_id = models.IntegerField(primary_key=True)
     group = models.IntegerField()
-    user = models.IntegerField()
+    user = models.CharField(max_length=64)
     nickname = models.CharField(max_length=50)
     joined_at = models.DateTimeField()
     role = models.CharField(max_length=50)
@@ -89,3 +89,17 @@ class GptConversation(models.Model):
 
     def __str__(self):
         return f'Conversation from {self.user_id}'
+    
+class Conversation(models.Model):
+    CONVERSATION_TYPE_CHOICES = [
+        ('P', 'Private'),
+        ('G', 'Group'),
+    ]
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=1, choices=CONVERSATION_TYPE_CHOICES)
+    group = models.IntegerField()
+
+class Participant(models.Model):
+    user = models.CharField(max_length=64)
+    conversation = models.IntegerField()
+    is_hidden=models.BooleanField(default=False)

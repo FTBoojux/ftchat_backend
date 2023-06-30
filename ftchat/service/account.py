@@ -1,6 +1,8 @@
 from ftchat.models import User
 from ftchat.models import Contact
 from ftchat.models import ContactRequest
+from ftchat.models import Conversation
+from ftchat.models import Participant
 import ftchat.utils.redis_utils as redis_utils
 
 from django.db.models import Q
@@ -83,7 +85,7 @@ def update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled):
     
 def get_contact_requests(uid):
     if ContactRequest.objects.filter(receiver=uid,status="pending").exists():
-        return list(ContactRequest.objects.filter(receiver=uid).values('requester', 'message', 'timestamp', 'status').order_by('-timestamp')) 
+        return list(ContactRequest.objects.filter(receiver=uid,status="pending").values('requester', 'message', 'timestamp', 'status').order_by('-timestamp')) 
     else:
         return []
     
@@ -99,6 +101,7 @@ def add_contact(uid1,uid2):
         friend=uid1
     )
     ContactRequest.objects.filter(requester=uid2, receiver=uid1).update(status='accepted')
+    create_conversation_private_if_not_exist(uid1,uid2)
     return True,"已添加好友!"
 
 def reject_contact_request(uid1,uid2):
@@ -109,3 +112,19 @@ def delete_contact(uid1,uid2):
     Contact.objects.filter(user=uid1, friend=uid2).delete()
     Contact.objects.filter(user=uid2, friend=uid1).delete()
     return "已删除!"
+
+def create_conversation_private_if_not_exist(uid1,uid2):
+    uid1_conversations = set(Participant.objects.filter(user=uid1).values_list('conversation', flat=True))
+    uid2_conversations = set(Participant.objects.filter(user=uid2).values_list('conversation', flat=True))
+
+    common_conversations = uid1_conversations & uid2_conversations
+
+    # 然后，过滤出私人对话
+    private_conversations = Conversation.objects.filter(id__in=common_conversations, type='P')
+
+    if private_conversations.exists():
+        return False, "已经存在!"
+    conversation = Conversation.objects.create(type='P',group=1)
+    Participant.objects.create(conversation=conversation.id, user=uid1)
+    Participant.objects.create(conversation=conversation.id, user=uid2)
+    return True,"已创建!"
