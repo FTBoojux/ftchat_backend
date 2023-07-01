@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import path
 
 from ftchat.views import base_views as views 
-from ftchat.views import chat_gpt as chat_gpt_views
 from ftchat.views.account import user as account_views
 from ftchat.views.gpt import gpt_views
 from ftchat.views.message import message_views
+from ftchat.views.conversation import conversation_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +39,5 @@ urlpatterns = [
     path('gpt/chat/',gpt_views.GptConversation.as_view(),name='chat_gpt'),
     path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create'),
     path('message/new_message_num/',message_views.MessageNums.as_view(),name='new_message_num'),
+    path('conversations/',conversation_views.ConversationView.as_view(),name='conversations'),
 ]
