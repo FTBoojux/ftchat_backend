@@ -45,10 +45,10 @@ class Contact(models.Model):
 
 
 class Group(models.Model):
-    group_id = models.IntegerField(primary_key=True)
+    group_id = models.AutoField(primary_key=True)
     group_name = models.CharField(max_length=50)
     owner = models.CharField(max_length=64)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     announcement = models.CharField(max_length=256, null=True)
     avatar = models.CharField(max_length=256, null=True)
 
@@ -58,7 +58,7 @@ class GroupMember(models.Model):
     group = models.IntegerField()
     user = models.CharField(max_length=64)
     nickname = models.CharField(max_length=50)
-    joined_at = models.DateTimeField()
+    joined_at = models.DateTimeField(auto_now_add=True)
     role = models.CharField(max_length=50)
 
 
