@@ -54,12 +54,12 @@ class Group(models.Model):
 
 
 class GroupMember(models.Model):
-    member_id = models.IntegerField(primary_key=True)
+    member_id = models.AutoField(primary_key=True)
     group = models.IntegerField()
     user = models.CharField(max_length=64)
-    nickname = models.CharField(max_length=50)
+    nickname = models.CharField(max_length=50,null=True)
     joined_at = models.DateTimeField(auto_now_add=True)
-    role = models.CharField(max_length=50)
+    role = models.IntegerField()
 
 
 class ContactRequest(models.Model):

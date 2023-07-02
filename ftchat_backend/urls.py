@@ -21,7 +21,7 @@ from ftchat.views.account import user as account_views
 from ftchat.views.gpt import gpt_views
 from ftchat.views.message import message_views
 from ftchat.views.conversation import conversation_views
-
+from ftchat.views.group import group_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,4 +40,5 @@ urlpatterns = [
     path('gpt/conversation/',gpt_views.ConversationView.as_view(),name='conversation_create'),
     path('message/new_message_num/',message_views.MessageNums.as_view(),name='new_message_num'),
     path('conversations/',conversation_views.ConversationView.as_view(),name='conversations'),
+    path('group/',group_views.GroupView.as_view(),name='group'),
 ]
