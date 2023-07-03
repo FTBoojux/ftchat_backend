@@ -98,6 +98,7 @@ class Conversation(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=1, choices=CONVERSATION_TYPE_CHOICES)
     group = models.IntegerField()
+    last_message_at = models.DateTimeField(auto_now_add=True,null=True)
 
 class Participant(models.Model):
     user = models.CharField(max_length=64)
