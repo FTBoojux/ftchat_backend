@@ -2,8 +2,9 @@ from ftchat.models import Conversation, Participant, User, Group
 
 def get_conversations(uid):
     conversations = []
-    if Participant.objects.filter(user=uid).exists():
-        conversation_ids = Participant.objects.filter(user=uid).values_list('conversation', flat=True)
+    conversation_ids = Participant.objects.filter(user=uid).values_list('conversation', flat=True)
+
+    if conversation_ids:
         _conversations = Conversation.objects.filter(id__in=conversation_ids).order_by('-last_message_at').values('id', 'type', 'group', 'last_message_at')
         # for conversation_id in Participant.objects.filter(user=uid).values_list('conversation', flat=True):
         for conversation in _conversations:
