@@ -29,18 +29,6 @@ def search_contact(user_id,keyword):
     return list(results)
 
 def search_stranger(user_id,keyword):
-    # with connection.cursor() as cursor:
-    #     cursor.execute("""
-    #         SELECT username, user_id, avatar, bio
-    #         FROM ftchat_user 
-    #         where user_id not in(
-	# 			select friend from ftchat_contact where user = %s
-    #         ) and user_id != '1' and user_id != %s and username like %s
-    #     """, [user_id, user_id, '%' + keyword + '%'])
-    #     rows = cursor.fetchall()
-    # column_names = [col[0] for col in cursor.description]
-    # results = [dict(zip(column_names, row)) for row in rows]
-    # return results
     contact_ids = Contact.objects.filter(user=user_id).values_list('friend', flat=True)
     results = User.objects.exclude(Q(user_id__in=contact_ids) | Q(user_id=user_id) | Q(user_id=1)).filter(username__icontains=keyword).values('username', 'user_id', 'avatar', 'bio')
     return list(results)

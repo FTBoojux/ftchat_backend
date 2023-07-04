@@ -105,7 +105,7 @@ class ConversationSearchView(AuthenticateView):
     def get(self,request,*args,**kwargs):
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(request.META.get('HTTP_AUTHORIZATION')))
         keyword = request.GET.get('keyword')
-        strangers = account_service.search_stranger(uid,keyword)
+        strangers = [] if keyword is None or keyword == '' else account_service.search_stranger(uid,keyword)
         contacts = account_service.search_contact(uid,keyword)
         groups_unjoined = [] if keyword is None or keyword == '' else account_service.search_group_unjoined(uid,keyword)
         groups_joined = account_service.search_group_joined(uid,keyword)
