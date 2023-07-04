@@ -101,3 +101,18 @@ class UserInfoForEditView(AuthenticateView):
         sentiment_analysis_enabled = request.data.get('sentiment_analysis_enabled')
         res = account_service.update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled)
         return JsonResponse({'result':'success','message':'','code':200,'data':res})
+class ConversationSearchView(AuthenticateView):
+    def get(self,request,*args,**kwargs):
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(request.META.get('HTTP_AUTHORIZATION')))
+        keyword = request.GET.get('keyword')
+        strangers = account_service.search_stranger(uid,keyword)
+        contacts = account_service.search_contact(uid,keyword)
+        groups_unjoined = [] if keyword is None or keyword == '' else account_service.search_group_unjoined(uid,keyword)
+        groups_joined = account_service.search_group_joined(uid,keyword)
+        data = {
+            'strangers':strangers,
+            'contacts':contacts,
+            'groups_unjoined':groups_unjoined,
+            'groups_joined':groups_joined
+        }
+        return JsonResponse({'result':'success','message':'','code':200,'data':data})
