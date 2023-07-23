@@ -12,3 +12,5 @@ ftchat/views/account/__pycache__/*
 ftchat/views/gpt/__pycache__/*
 ftchat/views/message/__pycache__/*
 ftchat/views/conversation/__pycache__/*
+ftchat/*/__pycache__/*
+ftchat/views/group/__pycache__/*
