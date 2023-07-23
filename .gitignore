@@ -14,3 +14,4 @@ ftchat/views/message/__pycache__/*
 ftchat/views/conversation/__pycache__/*
 ftchat/*/__pycache__/*
 ftchat/views/group/__pycache__/*
+ftchat/views/group/__pycache__/group_views.cpython-310.pyc
