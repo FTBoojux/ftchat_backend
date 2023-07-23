@@ -114,4 +114,5 @@ class GroupJoinRequest(models.Model):
         ('REJECTED', 'Rejected'),
     ]
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='PENDING')
+    message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
