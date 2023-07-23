@@ -104,3 +104,14 @@ class Participant(models.Model):
     user = models.CharField(max_length=64)
     conversation = models.IntegerField()
     is_hidden=models.BooleanField(default=False)
+
+class GroupJoinRequest(models.Model):
+    group = models.IntegerField()
+    user = models.CharField(max_length=64)
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
