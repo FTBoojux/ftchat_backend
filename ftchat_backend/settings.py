@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 from ftchat import applicationConf
-from ftchat.applicationConf import mail_host, mail_port, mail_password, redis_password, redis_host, redis_port
+from ftchat.applicationConf import mail_host, mail_port, mail_password, redis_password, redis_host, redis_port, \
+database_engine, database_name, database_user, database_password, database_host, database_port
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,12 +85,12 @@ WSGI_APPLICATION = 'ftchat_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ftchat',
-        'USER': 'root',
-        'PASSWORD': 'BoojuxMysql',
-        'HOST': '47.98.97.181',  # 例如 'localhost' 或者是远程服务器 IP
-        'PORT': '3306',  # 默认是 3306
+        'ENGINE': database_engine,
+        'NAME': database_name,
+        'USER': database_user,
+        'PASSWORD': database_password,
+        'HOST': database_host,  # 例如 'localhost' 或者是远程服务器 IP
+        'PORT': database_port,  # 默认是 3306
     }
 }
 
