@@ -1,6 +1,7 @@
 from ftchat.views.AuthenticateView import AuthenticateView
 from ftchat.utils import jwt_util as jwt_utils
-from ftchat.models import Group,GroupMember,Conversation,Participant
+from ftchat.models import Group,GroupMember,Conversation,Participant,GroupJoinRequest
+from ftchat.service import group as group_service
 from django.http import JsonResponse
 
 class GroupView(AuthenticateView):
@@ -32,3 +33,11 @@ class GroupView(AuthenticateView):
         )
         
         return JsonResponse({'result':'success','message':'创建成功','code':200,'data':''})
+    
+class GroupJoinRequestView(AuthenticateView):
+    def post(self,request,group_id):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        message = request.data.get('message')
+        res = group_service.save_group_Join_request(uid,group_id,message)
+        return res

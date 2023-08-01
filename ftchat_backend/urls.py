@@ -41,5 +41,6 @@ urlpatterns = [
     path('message/new_message_num/',message_views.MessageNums.as_view(),name='new_message_num'),
     path('conversations/',conversation_views.ConversationView.as_view(),name='conversations'),
     path('group/',group_views.GroupView.as_view(),name='group'),
+    path('groups/<str:group_id>/join-requests/',group_views.GroupJoinRequestView.as_view(),name='group_join_request'),
     path('search/',account_views.ConversationSearchView.as_view(),name='search'),
 ]
