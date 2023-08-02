@@ -35,6 +35,11 @@ class GroupView(AuthenticateView):
         return JsonResponse({'result':'success','message':'创建成功','code':200,'data':''})
     
 class GroupJoinRequestView(AuthenticateView):
+    def get(self,request):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        res = group_service.get_group_join_requests(uid)
+        return JsonResponse({'result':'success','message':'','code':200,'data':res})
     def post(self,request,group_id):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))

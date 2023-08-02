@@ -106,6 +106,7 @@ class Participant(models.Model):
     is_hidden=models.BooleanField(default=False)
 
 class GroupJoinRequest(models.Model):
+    id = models.AutoField(primary_key=True)
     group = models.IntegerField()
     user = models.CharField(max_length=64)
     STATUS_CHOICES = [
