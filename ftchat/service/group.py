@@ -36,3 +36,15 @@ def get_group_join_requests(uid):
             "time":group_join_request.created_at,
         })
     return res
+
+def reject_group_join_request(uid,group_id,requester):
+    if not Group.objects.filter(group_id=group_id,owner=uid).exists():
+        return JsonResponse({'result':'fail','message':'没有权限','code':200,'data':''})
+    GroupJoinRequest.objects.filter(group=group_id,user=requester,status='pending').update(status='rejected')
+    return JsonResponse({'result':'success','message':'拒绝成功','code':200,'data':''})
+
+def accept_group_join_request(uid,group_id):
+    if not Group.objects.filter(group_id=group_id,owner=uid).exists():
+        return JsonResponse({'result':'fail','message':'没有权限','code':200,'data':''})
+    GroupJoinRequest.objects.filter(group=group_id,status='pending').update(status='approved')
+    return JsonResponse({'result':'success','message':'同意成功','code':200,'data':''})

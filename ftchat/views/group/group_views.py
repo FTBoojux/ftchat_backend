@@ -46,3 +46,13 @@ class GroupJoinRequestView(AuthenticateView):
         message = request.data.get('message')
         res = group_service.save_group_Join_request(uid,group_id,message)
         return res
+    def put(self,request,group_id):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        option = request.data.get('option')
+        requester = request.data.get('requester')['user_id']
+        if option == 'reject':
+            res = group_service.reject_group_join_request(uid,group_id,requester)
+        elif option == 'accept':
+            res = group_service.accept_group_join_request(uid,group_id,requester)
+        return res
