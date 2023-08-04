@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from ftchat.models import GroupJoinRequest, Group, User
+from ftchat.models import GroupJoinRequest, Group, User,GroupMember,Conversation,Participant
 
 def save_group_Join_request(uid,group_id,message):
     # 检查是否重复请求
@@ -43,8 +43,13 @@ def reject_group_join_request(uid,group_id,requester):
     GroupJoinRequest.objects.filter(group=group_id,user=requester,status='pending').update(status='rejected')
     return JsonResponse({'result':'success','message':'拒绝成功','code':200,'data':''})
 
-def accept_group_join_request(uid,group_id):
+def accept_group_join_request(uid,group_id,requester):
     if not Group.objects.filter(group_id=group_id,owner=uid).exists():
         return JsonResponse({'result':'fail','message':'没有权限','code':200,'data':''})
-    GroupJoinRequest.objects.filter(group=group_id,status='pending').update(status='approved')
-    return JsonResponse({'result':'success','message':'同意成功','code':200,'data':''})
+    GroupJoinRequest.objects.filter(group=group_id,user=requester,status='pending').update(status='approved')
+    conversation_id = Conversation.objects.get(type='G',group=group_id).id
+    Participant.objects.create(
+        conversation=conversation_id,
+        user=requester
+    )
+    return JsonResponse({'result':'success','message':'已通过','code':200,'data':''})
