@@ -1,4 +1,4 @@
-from ftchat.models import Conversation, Participant, User, Group
+from ftchat.models import Conversation, Participant, User, Group, GroupMember
 
 def get_conversations(uid):
     conversations = []
@@ -23,11 +23,12 @@ def get_conversations(uid):
             else:
                 # 如果是群聊，查询群聊的信息
                 group_id = conversation['group']
-                group = Group.objects.get(group_id=group_id)
-                _conversation = {
-                    'conversation_name': group.group_name,
-                    'conversation_avatar': group.avatar,
-                    'conversation_id': conversation['id']
-                }
-                conversations.append(_conversation)
+                if GroupMember.objects.filter(group=group_id, user=uid).exists():
+                    group = Group.objects.get(group_id=group_id)
+                    _conversation = {
+                        'conversation_name': group.group_name,
+                        'conversation_avatar': group.avatar,
+                        'conversation_id': conversation['id']
+                    }
+                    conversations.append(_conversation)
     return conversations

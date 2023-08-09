@@ -3,7 +3,7 @@ from ftchat.models import GroupJoinRequest, Group, User,GroupMember,Conversation
 
 def save_group_Join_request(uid,group_id,message):
     # 检查是否重复请求
-    if GroupJoinRequest.objects.filter(group=group_id,user=uid).exists():
+    if GroupJoinRequest.objects.filter(group=group_id,user=uid,status="pending").exists():
         return JsonResponse({'result':'fail','message':'已经申请过了','code':200,'data':''})
     GroupJoinRequest.objects.create(
         group=group_id,
@@ -52,4 +52,18 @@ def accept_group_join_request(uid,group_id,requester):
         conversation=conversation_id,
         user=requester
     )
+    GroupMember.objects.create(
+        group=group_id,
+        user=requester,
+        role=3
+    )
     return JsonResponse({'result':'success','message':'已通过','code':200,'data':''})
+
+def delete_group_member(uid,group_id):
+    # 判断是否是成员本人操作
+    if not GroupMember.objects.filter(group=group_id,user=uid).exists():
+        # 判断是否是群主操作
+        if not Group.objects.filter(group_id=group_id,owner=uid).exists():
+            return JsonResponse({'result':'fail','message':'没有权限','code':403,'data':''})        
+    GroupMember.objects.filter(group=group_id,user=uid).delete()    
+    return JsonResponse({'result':'success','message':'删除成功','code':200,'data':''})

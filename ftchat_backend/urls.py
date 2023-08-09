@@ -22,6 +22,7 @@ from ftchat.views.gpt import gpt_views
 from ftchat.views.message import message_views
 from ftchat.views.conversation import conversation_views
 from ftchat.views.group import group_views
+from ftchat.views.group import group_members_view as group_members_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,4 +45,5 @@ urlpatterns = [
     path('groups/<str:group_id>/join_requests/',group_views.GroupJoinRequestView.as_view(),name='group_join_request'),
     path('groups/join_requests/',group_views.GroupJoinRequestView.as_view(),name='group_join_requests'),
     path('search/',account_views.ConversationSearchView.as_view(),name='search'),
+    path('groups/<str:group_id>/members/',group_members_views.GroupMembersView.as_view(),name='group_members'),
 ]

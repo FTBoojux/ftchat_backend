@@ -4,6 +4,7 @@ from ftchat.models import ContactRequest
 from ftchat.models import Conversation
 from ftchat.models import Participant
 from ftchat.models import Group
+from ftchat.models import GroupMember
 import ftchat.utils.redis_utils as redis_utils
 
 from django.db.models import Q
@@ -119,13 +120,16 @@ def create_conversation_private_if_not_exist(uid1,uid2):
     return True,"已创建!"
 
 def search_group_unjoined(uid,keyword):
-    joined_conversations = Participant.objects.filter(user=uid,is_hidden=False).values_list('conversation', flat=True)
-    group_ids = Conversation.objects.exclude(id__in=joined_conversations).filter(type='G').values_list('group')
-    groups = Group.objects.filter(group_id__in=group_ids, group_name__icontains=keyword).values('group_id', 'group_name', 'avatar')
+    # joined_conversations = Participant.objects.filter(user=uid,is_hidden=False).values_list('conversation', flat=True)
+    # group_ids = Conversation.objects.exclude(id__in=joined_conversations).filter(type='G').values_list('group')
+    group_ids = GroupMember.objects.filter(user=uid).values_list('group')
+    groups = Group.objects.exclude(group_id__in=group_ids).filter(group_name__icontains=keyword).values('group_id', 'group_name', 'avatar')
     return list(groups)
 
 def search_group_joined(uid,keyword):
-    joined_conversations = Participant.objects.filter(user=uid,is_hidden=False).values_list('conversation', flat=True)
-    group_ids = Conversation.objects.filter(id__in=joined_conversations, type='G').values_list('group')
+    # joined_conversations = Participant.objects.filter(user=uid,is_hidden=False).values_list('conversation', flat=True)
+    # group_ids = Conversation.objects.filter(id__in=joined_conversations, type='G').values_list('group')
+    group_ids = GroupMember.objects.filter(user=uid).values_list('group')
     groups = Group.objects.filter(group_id__in=group_ids,group_name__icontains=keyword).values('group_id', 'group_name', 'avatar')
+    
     return list(groups)
