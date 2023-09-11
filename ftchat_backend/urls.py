@@ -30,6 +30,7 @@ urlpatterns = [
     path('account/register/',views.register, name='register'),
     path('account/upload_avatar/',views.upload_avatar, name='upload_avatar'),
     path('account/login/',views.login,name='login'),
+    path('account/login_inner/',views.login_inner,name='login_inner'),
     path('account/contacts/',account_views.ContactView.as_view(),name='friends'),
     path('account/contacts/<str:user_id>/',account_views.ContactView.as_view(),name='friends'),
     path('account/strangers/',account_views.UserInfoForAddedView.as_view(),name='strangers'),

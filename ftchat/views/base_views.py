@@ -168,3 +168,41 @@ def login(request):
             'message': '邮箱或密码错误'
         }
         return JsonResponse(response_data)
+
+@require_POST
+@csrf_exempt
+def login_inner(request):
+
+    # 限制内部调用：获取请求地址
+    ip = request.META.get('REMOTE_ADDR')
+    print("内部登录请求IP地址：", ip)
+
+    data = json.load(request)
+    email: str = data.get('email')
+    password: str = data.get('password')
+    user = _validate_email_and_password(email, password)
+    if user is not None:
+        payload = {
+            'user_id': str(user.user_id),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+            'iat': datetime.datetime.utcnow()
+        }
+        access_token = jwt.encode(payload,jwt_security_key,algorithm='HS256')
+        redis_utils.token_add(str(user.user_id), access_token)
+        response_data = {
+            'result': 'success',
+            'code': 200,
+            'message': '登录成功',
+            'data': {
+                'access_token': access_token,
+            }
+        }
+        return JsonResponse(response_data)
+    else:
+        # 邮箱或密码错误
+        response_data = {
+            'result': 'error',
+            'code': 400,
+            'message': '邮箱或密码错误'
+        }
+        return JsonResponse(response_data)

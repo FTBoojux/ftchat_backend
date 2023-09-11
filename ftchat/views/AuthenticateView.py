@@ -7,14 +7,18 @@ from ftchat.models import User
         
 class MyCustomAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
+        mode = request.META.get('HTTP_MODE')
         token = request.META.get('HTTP_AUTHORIZATION')
-        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        if mode == 'outer' :
+            uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))    
+        elif mode == 'inner':
+            uid = jwt_utils.get_uid_from_jwt_inner(token)
         if uid is None:
             raise exceptions.AuthenticationFailed('用户未登录')
         user = User.objects.get(user_id=uid)
         if user is None:
             raise exceptions.AuthenticationFailed('用户不存在')
-        return (user,token)
+        return (user,token)    
     
 class AuthenticateView(APIView):
     authentication_classes = (MyCustomAuthentication,)
