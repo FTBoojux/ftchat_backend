@@ -55,6 +55,7 @@ def accept_group_join_request(uid,group_id,requester):
     GroupMember.objects.create(
         group=group_id,
         user=requester,
+        nickname=User.objects.get(user_id=requester).username,
         role=3
     )
     return JsonResponse({'result':'success','message':'已通过','code':200,'data':''})
@@ -67,3 +68,17 @@ def delete_group_member(uid,group_id):
             return JsonResponse({'result':'fail','message':'没有权限','code':403,'data':''})        
     GroupMember.objects.filter(group=group_id,user=uid).delete()    
     return JsonResponse({'result':'success','message':'删除成功','code':200,'data':''})
+
+def get_group_members(group_id):
+    res = []
+    group_members = GroupMember.objects.filter(group=group_id)
+    for group_member in group_members:
+        user = User.objects.get(user_id=group_member.user)
+        res.append({
+            "user_id":user.user_id,
+            "username":user.username,
+            "nickname":group_member.nickname,
+            "avatar":user.avatar,
+            "role":group_member.role
+        })
+    return JsonResponse({'result':'success','message':'获取成功','code':200,'data':res})

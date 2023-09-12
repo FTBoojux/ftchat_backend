@@ -5,7 +5,8 @@ from django.http import JsonResponse
 
 class GroupMembersView(AuthenticateView):
     def get(self,request,group_id):
-        pass
+        res = group_service.get_group_members(group_id)
+        return res
     def post(self,request,group_id):
         pass
     def delete(self,request,group_id):
