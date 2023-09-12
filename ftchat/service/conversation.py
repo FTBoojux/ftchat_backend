@@ -1,4 +1,6 @@
 from ftchat.models import Conversation, Participant, User, Group, GroupMember
+from django.http import JsonResponse
+import datetime
 
 def get_conversations(uid):
     conversations = []
@@ -32,3 +34,10 @@ def get_conversations(uid):
                     }
                     conversations.append(_conversation)
     return conversations
+
+def save_message(uid,conversation_id,message):
+    if not Participant.objects.filter(user=uid,conversation=conversation_id).exists():
+        return JsonResponse({'result':'fail','message':'没有权限','code':200,'data':''})
+    Conversation.objects.filter(id=conversation_id).update(last_message_at=datetime.datetime.now())
+    # TODO: 保存消息到cassandra
+    return JsonResponse({'result':'success','message':'','code':200,'data':''})
