@@ -47,4 +47,5 @@ urlpatterns = [
     path('groups/join_requests/',group_views.GroupJoinRequestView.as_view(),name='group_join_requests'),
     path('search/',account_views.ConversationSearchView.as_view(),name='search'),
     path('groups/<str:group_id>/members/',group_members_views.GroupMembersView.as_view(),name='group_members'),
+    path('conversation/<str:conversation_id>/participants/',group_members_views.GroupMembersView.as_view(),name='conversation_participants'),
 ]

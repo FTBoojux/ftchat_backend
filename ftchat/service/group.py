@@ -69,16 +69,42 @@ def delete_group_member(uid,group_id):
     GroupMember.objects.filter(group=group_id,user=uid).delete()    
     return JsonResponse({'result':'success','message':'删除成功','code':200,'data':''})
 
-def get_group_members(group_id):
+def get_group_members(conversation_id,isOuter=True,uid="" ):
     res = []
-    group_members = GroupMember.objects.filter(group=group_id)
-    for group_member in group_members:
-        user = User.objects.get(user_id=group_member.user)
-        res.append({
-            "user_id":user.user_id,
-            "username":user.username,
-            "nickname":group_member.nickname,
-            "avatar":user.avatar,
-            "role":group_member.role
-        })
-    return JsonResponse({'result':'success','message':'获取成功','code':200,'data':res})
+    conversation = Conversation.objects.get(id=conversation_id)
+    if(isOuter):
+        # 外部请求，需验证该用户仍在当前会话中
+        # 对于群聊，该用户必须是群成员
+        # 对于私聊，该用户必须是会话参与者
+        if conversation == None:
+            return JsonResponse({'result':'fail','message':'会话不存在','code':404,'data':''})
+        if conversation.type == 'G':
+            if not GroupMember.objects.filter(group=conversation.group,user=uid).exists():
+                return JsonResponse({'result':'fail','message':'没有权限','code':403,'data':''})
+        else:
+            if not Participant.objects.filter(conversation=conversation_id,user=uid).exists():
+                return JsonResponse({'result':'fail','message':'没有权限','code':403,'data':''})
+    if conversation.type == 'G':        
+        group_members = GroupMember.objects.filter(group=conversation.group)
+        for group_member in group_members:
+            user = User.objects.get(user_id=group_member.user)
+            res.append({
+                "user_id":user.user_id,
+                "username":user.username,
+                "nickname":group_member.nickname,
+                "avatar":user.avatar,
+                "role":group_member.role
+            })
+        return JsonResponse({'result':'success','message':'获取成功','code':200,'data':res})
+    else:
+        participants = Participant.objects.filter(conversation=conversation_id)
+        for participant in participants:
+            user = User.objects.get(user_id=participant.user)
+            res.append({
+                "user_id":user.user_id,
+                "username":user.username,
+                "nickname":user.username,
+                "avatar":user.avatar,
+                "role":1
+            })
+        return JsonResponse({'result':'success','message':'获取成功','code':200,'data':res})
