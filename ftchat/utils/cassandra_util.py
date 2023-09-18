@@ -69,3 +69,21 @@ def save_conversation_message(conversation_id,uid,message,is_group_chat):
         """,
         (conversation_id,str(uuid.uuid4()),uid,datetime.now(),1,message,is_group_chat,"")
     )
+
+def get_conversation_message_list(conversation_id,uid,page_size=10,paging_state=None):
+    statement = SimpleStatement(
+        """
+        SELECT conversation_id,content,message_id,message_type,sender_id,timestamp,sentiment_analysis_result
+        FROM chat_message
+        WHERE conversation_id = %s
+        ORDER BY timestamp ASC
+        """,
+        fetch_size=page_size
+    )
+
+    result_set = session.execute(statement, (str(conversation_id),), paging_state=paging_state)
+
+    rows = result_set.current_rows
+    next_paging_state = result_set.paging_state
+
+    return rows, next_paging_state
