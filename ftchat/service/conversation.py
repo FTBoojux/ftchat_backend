@@ -1,5 +1,7 @@
 from ftchat.models import Conversation, Participant, User, Group, GroupMember
+from ftchat.utils import cassandra_util
 from django.http import JsonResponse
+from django.utils import timezone
 import datetime
 
 def get_conversations(uid):
@@ -36,8 +38,17 @@ def get_conversations(uid):
     return conversations
 
 def save_message(uid,conversation_id,message):
-    if not Participant.objects.filter(user=uid,conversation=conversation_id).exists():
-        return JsonResponse({'result':'fail','message':'没有权限','code':200,'data':''})
-    Conversation.objects.filter(id=conversation_id).update(last_message_at=datetime.datetime.now())
+    # 检查用户会话权限
+    conversation = Conversation.objects.get(id=conversation_id)
+    if conversation.type == 'P':
+        # 对于私人会话，检查用户是否在会话中
+        if not Participant.objects.filter(conversation=conversation_id, user=uid).exists():
+            return JsonResponse({'result':'fail','message':'','code':403,'data':''})    
+    elif conversation.type == 'G':
+        # 对于群聊，检查用户是否在群聊中
+        if not GroupMember.objects.filter(group=conversation.group, user=uid).exists():
+            return JsonResponse({'result':'fail','message':'','code':403,'data':''})
+    Conversation.objects.filter(id=conversation_id).update(last_message_at=timezone.now())
     # TODO: 保存消息到cassandra
+    cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G')
     return JsonResponse({'result':'success','message':'','code':200,'data':''})

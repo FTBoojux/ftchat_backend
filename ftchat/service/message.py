@@ -1,4 +1,4 @@
-from ftchat.models import ContactRequest,GroupJoinRequest,Group
+from ftchat.models import ContactRequest,GroupJoinRequest,Group,Conversation
 
 def get_message_nums(uid):
     contacts = ContactRequest.objects.filter(receiver=uid,status="pending").count()

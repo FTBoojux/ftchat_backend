@@ -60,3 +60,12 @@ def get_message_list(sender, receiver, conversation_id, page_size=10, paging_sta
     next_paging_state = result_set.paging_state
 
     return rows, next_paging_state
+
+def save_conversation_message(conversation_id,uid,message,is_group_chat):
+    session.execute(
+        """
+        INSERT INTO chat_message(conversation_id, message_id,sender_id,timestamp,message_type,content,is_group_chat,sentiment_analysis_result)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+        (conversation_id,str(uuid.uuid4()),uid,datetime.now(),1,message,is_group_chat,"")
+    )

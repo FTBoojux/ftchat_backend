@@ -19,8 +19,8 @@ from django.urls import path
 from ftchat.views import base_views as views 
 from ftchat.views.account import user as account_views
 from ftchat.views.gpt import gpt_views
-from ftchat.views.message import message_views
 from ftchat.views.conversation import conversation_views
+from ftchat.views.message import message_views
 from ftchat.views.group import group_views
 from ftchat.views.group import group_members_view as group_members_views
 
@@ -48,4 +48,5 @@ urlpatterns = [
     path('search/',account_views.ConversationSearchView.as_view(),name='search'),
     path('groups/<str:group_id>/members/',group_members_views.GroupMembersView.as_view(),name='group_members'),
     path('conversation/<str:conversation_id>/participants/',group_members_views.GroupMembersView.as_view(),name='conversation_participants'),
+    path('conversation/<str:conversation_id>/message/',conversation_views.ConversationMessageView.as_view(),name='conversation_message'),
 ]
