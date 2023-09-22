@@ -86,5 +86,5 @@ def get_conversation_message_list(conversation_id,uid,page_size=10,paging_state=
     rows = result_set.current_rows
     next_paging_state = result_set.paging_state
     if next_paging_state is not None:
-        next_paging_state = base64.b64encode(next_paging_state).decode('utf-8')
+        next_paging_state = base64.b64encode(next_paging_state).decode()
     return rows, next_paging_state
