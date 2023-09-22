@@ -56,11 +56,9 @@ def get_avatar(uid):
         return None
     
 def get_user_info(uid):
-    if User.objects.filter(user_id=uid).exists():
-        return User.objects.filter(user_id=uid).values('username', 'avatar', 'bio', 'sentiment_analysis_enabled')[0]
-    else:
-        return None
-    
+    user_info = User.objects.filter(user_id=uid).values('username', 'avatar', 'bio', 'sentiment_analysis_enabled').first()
+    return user_info
+
 def update_user_info(uid,username,bio,avatar,sentiment_analysis_enabled):
     if User.objects.filter(user_id=uid).exists():
         User.objects.filter(user_id=uid).update(
