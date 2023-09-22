@@ -3,7 +3,7 @@ from cassandra.auth import PlainTextAuthProvider
 import uuid
 from datetime import datetime
 from cassandra.query import SimpleStatement
-
+import base64
 from ftchat.applicationConf import cassandra_host, cassandra_port, cassandra_username, cassandra_password
 
 auth_provider = PlainTextAuthProvider(
@@ -85,5 +85,6 @@ def get_conversation_message_list(conversation_id,uid,page_size=10,paging_state=
 
     rows = result_set.current_rows
     next_paging_state = result_set.paging_state
-
+    if next_paging_state is not None:
+        next_paging_state = base64.b64encode(next_paging_state).decode('utf-8')
     return rows, next_paging_state

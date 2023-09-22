@@ -19,8 +19,8 @@ class ConversationMessageView(AuthenticateView):
         page_size = request.GET.get('page_size',10)
         if paging_state is not None:
             paging_state = base64.b64decode(paging_state)
-
-        return conversation_service.get_message_list(uid,conversation_id,page_size,paging_state)
+        page_size = int(page_size)
+        return conversation_service.get_message_list(uid,conversation_id, page_size,paging_state)
     def post(self, request, conversation_id):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
