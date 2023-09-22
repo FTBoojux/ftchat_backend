@@ -2,6 +2,7 @@ from ftchat.models import Conversation, Participant, User, Group, GroupMember
 from ftchat.utils import cassandra_util
 from django.http import JsonResponse
 from django.utils import timezone
+from ftchat.service import account as account_service
 import datetime
 
 def get_conversations(uid):
@@ -63,11 +64,13 @@ def get_message_list(uid,conversation_id,page_size,paging_state):
     if not check_conversation_permission(uid,conversation_id):
         return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
     message_list,paging_state = cassandra_util.get_conversation_message_list(conversation_id,uid,page_size,paging_state)
+    # for message in message_list:
+    #     message.sender = account_service.get_user_info(message.sender_id)
     message_list = [{'conversation_id':message.conversation_id, 
                      'content':message.content,
                      'message_id':message.message_id,
                      'message_type':message.message_type,
-                     'sender_id':message.sender_id,
+                     'sender':account_service.get_user_info(message.sender_id),
                      'timestamp':message.timestamp,
                      'sentiment_analysis_result':message.sentiment_analysis_result
                      } for message in message_list]
