@@ -72,6 +72,7 @@ def get_message_list(uid,conversation_id,page_size,paging_state):
                      'message_type':message.message_type,
                      'sender':account_service.get_user_info(message.sender_id),
                      'timestamp':message.timestamp,
-                     'sentiment_analysis_result':message.sentiment_analysis_result
+                     'sentiment_analysis_result':message.sentiment_analysis_result,
+                     'side':'right' if message.sender_id == uid else 'left'
                      } for message in message_list]
     return JsonResponse({'result':'success','message':'','code':200,'data':{'message_list':message_list,'paging_state':paging_state}})
