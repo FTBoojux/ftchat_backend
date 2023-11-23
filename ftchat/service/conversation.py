@@ -57,8 +57,19 @@ def save_message(uid,conversation_id,message):
     if not check_conversation_permission(uid,conversation_id):
         return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
     Conversation.objects.filter(id=conversation_id).update(last_message_at=timezone.now())
-    cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G')
-    return JsonResponse({'result':'success','message':'','code':200,'data':''})
+    message_id,timestamp = cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G')
+    # 构建返回的消息
+    message = {
+        'conversation_id':conversation_id,
+        'content':message,
+        'message_id':message_id,
+        'message_type':1,
+        'sender':account_service.get_user_info(uid),
+        'timestamp':timestamp,
+        'sentiment_analysis_result':'',
+        'side':'right'
+        }
+    return JsonResponse({'result':'success','message':'','code':200,'data':message})
 
 def get_message_list(uid,conversation_id,page_size,paging_state):
     if not check_conversation_permission(uid,conversation_id):
