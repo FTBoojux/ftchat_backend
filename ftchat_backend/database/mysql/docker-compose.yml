@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-ftchat
+    environment:
+      MYSQL_DATABASE: DATABASE
+      MYSQL_PASSWORD: PASSWORD
+    ports:
+      - "3306:3306"
+    volumes:
+      - my_mysql_volume:/var/lib/mysql
+
+volumes:
+  my_mysql_volume:
