@@ -2,6 +2,6 @@ version: '3'
 services:
   redis:
     image: redis
-    command: redis-server --requirepass BoojuxRedis
+    command: redis-server --requirepass PASSWORD
     ports:
       - "6379:6379"
