@@ -79,12 +79,11 @@ def get_conversation_message_list(conversation_id,uid,page_size=10,paging_state=
         SELECT conversation_id,content,message_id,message_type,sender_id,timestamp,sentiment_analysis_result
         FROM chat_message
         WHERE conversation_id = %s
-        ORDER BY timestamp ASC
         """,
         fetch_size=page_size
     )
 
-    result_set = session.execute(statement, (str(conversation_id),), paging_state=paging_state)
+    result_set = session.execute(statement, (conversation_id), paging_state=paging_state)
 
     rows = result_set.current_rows
     next_paging_state = result_set.paging_state
