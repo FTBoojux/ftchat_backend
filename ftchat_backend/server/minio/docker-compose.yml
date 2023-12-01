@@ -7,11 +7,12 @@ services:
       - minio_data:/data
     ports:
       - "9000:9000"
-      - "9090:9090"  # 添加此行来映射管理控制台端口
+      - "9001:9001"
     environment:
-      MINIO_ROOT_USER: ""
-      MINIO_ROOT_PASSWORD: ""
-    command: server /data  # 添加 --console-address 参数
+      MINIO_ROOT_USER: "BoojuxMinioAdmin"
+      MINIO_ROOT_PASSWORD: "Boojux221010"
+    command: server --console-address ":9001" /data
 
 volumes:
   minio_data:
+
