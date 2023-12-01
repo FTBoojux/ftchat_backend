@@ -9,8 +9,8 @@ services:
       - "9000:9000"
       - "9090:9090"  # 添加此行来映射管理控制台端口
     environment:
-      MINIO_ACCESS_KEY: ""
-      MINIO_SECRET_KEY: ""
+      MINIO_ROOT_USER: ""
+      MINIO_ROOT_PASSWORD: ""
     command: server /data  # 添加 --console-address 参数
 
 volumes:
