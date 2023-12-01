@@ -12,16 +12,16 @@ CREATE TABLE IF NOT EXISTS friend_requests (
 DROP TABLE IF EXISTS ft_chat.chat_message;
 
 CREATE TABLE IF NOT EXISTS chat_message(
-	conversation_id UUID,
-	message_id UUID,
-	sender_id UUID,
+	conversation_id TEXT,
+	message_id TEXT,
+	sender_id TEXT,
 	timestamp TIMESTAMP,
 	message_type INT,
 	content TEXT,
 	is_group_chat BOOLEAN,
 	sentiment_analysis_result TEXT,
-	PRIMARY KEY (conversation_id,message_id,timestamp)
-)WITH CLUSTERING ORDER BY (message_id ASC,TIMESTAMP DESC);
+    PRIMARY KEY ((conversation_id), timestamp, message_id)
+) WITH CLUSTERING ORDER BY (timestamp DESC, message_id ASC);
 
 DROP TABLE IF EXISTS gpt_message;
 
