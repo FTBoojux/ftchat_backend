@@ -75,6 +75,8 @@ def get_message_list(uid,conversation_id,page_size,paging_state):
     if not check_conversation_permission(uid,conversation_id):
         return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
     message_list,paging_state = cassandra_util.get_conversation_message_list(conversation_id,uid,page_size,paging_state)
+    # message_list 倒置
+    message_list.reverse()
     # for message in message_list:
     #     message.sender = account_service.get_user_info(message.sender_id)
     message_list = [{'conversation_id':message.conversation_id, 
