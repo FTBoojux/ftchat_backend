@@ -104,6 +104,7 @@ class Participant(models.Model):
     user = models.CharField(max_length=64)
     conversation = models.IntegerField()
     is_hidden=models.BooleanField(default=False)
+    last_viewed = models.DateTimeField(auto_now=True)
 
 class GroupJoinRequest(models.Model):
     id = models.AutoField(primary_key=True)
