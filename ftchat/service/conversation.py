@@ -88,4 +88,6 @@ def get_message_list(uid,conversation_id,page_size,paging_state):
                      'sentiment_analysis_result':message.sentiment_analysis_result,
                      'side':'right' if message.sender_id == uid else 'left'
                      } for message in message_list]
+    # 更新用户对该会话的最后阅读时间
+    Participant.objects.filter(user=uid, conversation=conversation_id).update(last_viewed=timezone.now())
     return JsonResponse({'result':'success','message':'','code':200,'data':{'message_list':message_list,'paging_state':paging_state}})
