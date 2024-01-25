@@ -28,7 +28,7 @@ def get_conversations(uid):
                     _conversation['conversation_avatar'] = group.avatar
                     _conversation['conversation_id'] = str(conversation['id']) 
             # Define _conversation before accessing its 'conversation_id' key
-            message = cassandra_util.get_last_message(_conversation.get('conversation_id'), uid)
+            message = cassandra_util.get_last_message(_conversation.get('conversation_id'))
             _conversation['last_message'] = message
             conversations.append(_conversation)
     return conversations
