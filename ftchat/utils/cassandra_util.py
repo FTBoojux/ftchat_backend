@@ -91,3 +91,17 @@ def get_conversation_message_list(conversation_id, uid, page_size=10, paging_sta
     if next_paging_state is not None:
         next_paging_state = base64.b64encode(next_paging_state).decode()
     return rows[:page_size], next_paging_state
+
+def get_last_message(conversation_id):
+    statement = SimpleStatement(
+        """
+        SELECT conversation_id, content
+        FROM chat_message
+        WHERE conversation_id = %s
+        """
+    )
+    result_set = session.execute(statement, (conversation_id,))
+    rows = result_set.current_rows
+    if len(rows) == 0:
+        return ""
+    return rows[0].content
