@@ -118,3 +118,12 @@ class GroupJoinRequest(models.Model):
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='PENDING')
     message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Attachment(models.Model):
+    attachment_id = models.AutoField(primary_key=True)
+    file_name = models.CharField(max_length=255)
+    file_type = models.CharField(max_length=50)
+    file_size = models.BigIntegerField()
+    file_url = models.TextField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.CharField(max_length=64)
