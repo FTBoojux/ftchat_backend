@@ -23,7 +23,7 @@ from ftchat.views.conversation import conversation_views
 from ftchat.views.message import message_views
 from ftchat.views.group import group_views
 from ftchat.views.group import group_members_view as group_members_views
-
+from ftchat.views.attachment import attachment_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/request_verification_code/', views.request_verification_code, name='request_verification_code'),
@@ -49,4 +49,5 @@ urlpatterns = [
     path('groups/<str:group_id>/members/',group_members_views.GroupMembersView.as_view(),name='group_members'),
     path('conversation/<str:conversation_id>/participants/',group_members_views.GroupMembersView.as_view(),name='conversation_participants'),
     path('conversation/<str:conversation_id>/message/',conversation_views.ConversationMessageView.as_view(),name='conversation_message'),
+    path('file/attachments/',attachment_views.AttachmentViews.as_view(),name='attachments'),
 ]
