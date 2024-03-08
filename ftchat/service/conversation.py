@@ -46,7 +46,7 @@ def check_conversation_permission(uid,conversation_id):
             return False
     return True
 
-def save_message(uid,conversation_id,message):
+def save_message(uid,conversation_id,message,type):
     # 检查用户会话权限
     conversation = Conversation.objects.get(id=conversation_id)
     if not check_conversation_permission(uid,conversation_id):
@@ -58,7 +58,7 @@ def save_message(uid,conversation_id,message):
         'conversation_id':conversation_id,
         'content':message,
         'message_id':message_id,
-        'message_type':1,
+        'message_type':type,
         'sender':account_service.get_user_info(uid),
         'timestamp':timestamp,
         'sentiment_analysis_result':'',

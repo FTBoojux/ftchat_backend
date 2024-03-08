@@ -1,3 +1,4 @@
+import json
 from ftchat.views.AuthenticateView import AuthenticateView
 from ftchat.service import conversation as conversation_service
 from ftchat.utils import jwt_util as jwt_utils
@@ -25,7 +26,11 @@ class ConversationMessageView(AuthenticateView):
         token = request.META.get('HTTP_AUTHORIZATION')
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
         message = request.data.get('message')
-        res = conversation_service.save_message(uid,conversation_id,message)
+        _type = request.data.get('type')
+        # message不是字符串的话，转换成 json 字符串
+        if type(message) != str:
+            message = json.dumps(message)
+        res = conversation_service.save_message(uid,conversation_id,message,_type)
         return res
     def delete(self, request, conversation_id):
         pass
