@@ -1,5 +1,7 @@
+from datetime import datetime,timedelta
 import os
 from io import BytesIO
+import uuid
 
 from minio import Minio, S3Error
 
@@ -33,3 +35,8 @@ def upload_file_to_minio(bucket_name, file_name, in_memory_file,content_type):
     file_url = f"http://{minio_endpoint}{bucket_name}/{file_name}"
 
     return file_url
+
+def generate_presigned_url(filename):
+    object_name = f'{datetime.now().year}/{datetime.now().month}/{datetime.now().day}/{str(uuid.uuid4())}{os.path.splitext(filename)[1]}'
+    presigned_url = minio_client.presigned_put_object('ftchat-attachment', object_name, timedelta(seconds=1000))
+    return presigned_url

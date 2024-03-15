@@ -34,3 +34,11 @@ class AttachmentViews(AuthenticateView):
             'file_name': file_origin_name,
             'file_size': file_size,
         }})
+
+class PresignedUrlView(AuthenticateView):
+    def get(self, request, *args, **kwargs):
+        filename = request.GET.get('filename')
+        presigned_url = minio_utils.generate_presigned_url(filename)
+        return JsonResponse({'result': 'success', 'code': 200, 'message': '获取预签名URL成功', 'data': {
+            'presigned_url': presigned_url
+        }})
