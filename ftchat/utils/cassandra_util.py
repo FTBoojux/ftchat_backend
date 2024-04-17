@@ -61,7 +61,7 @@ def get_message_list(sender, receiver, conversation_id, page_size=10, paging_sta
 
     return rows, next_paging_state
 
-def save_conversation_message(conversation_id,uid,message,is_group_chat):
+def save_conversation_message(conversation_id,uid,message,is_group_chat,message_type=1):
     message_id = str(uuid.uuid4())
     timestamp = datetime.now()
     session.execute(
@@ -69,7 +69,7 @@ def save_conversation_message(conversation_id,uid,message,is_group_chat):
         INSERT INTO chat_message(conversation_id, message_id,sender_id,timestamp,message_type,content,is_group_chat,sentiment_analysis_result)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """,
-        (conversation_id,message_id,uid,timestamp,1,message,is_group_chat,"")
+        (conversation_id,message_id,uid,timestamp,message_type,message,is_group_chat,"")
     )
     return message_id,timestamp
 

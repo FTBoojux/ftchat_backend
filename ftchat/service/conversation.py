@@ -52,7 +52,7 @@ def save_message(uid,conversation_id,message,type):
     if not check_conversation_permission(uid,conversation_id):
         return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
     Conversation.objects.filter(id=conversation_id).update(last_message_at=timezone.now())
-    message_id,timestamp = cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G')
+    message_id,timestamp = cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G',type)
     # 构建返回的消息
     message = {
         'conversation_id':conversation_id,
