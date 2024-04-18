@@ -125,5 +125,6 @@ class Attachment(models.Model):
     file_type = models.CharField(max_length=50)
     file_size = models.BigIntegerField()
     file_url = models.TextField()
+    conversation_id = models.IntegerField(default=-1)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.CharField(max_length=64)

@@ -50,5 +50,6 @@ urlpatterns = [
     path('conversation/<str:conversation_id>/participants/',group_members_views.GroupMembersView.as_view(),name='conversation_participants'),
     path('conversation/<str:conversation_id>/message/',conversation_views.ConversationMessageView.as_view(),name='conversation_message'),
     path('file/attachments/',attachment_views.AttachmentViews.as_view(),name='attachments'),
+    path('file/attachment_v2/',attachment_views.AttachmentViews.as_view(),name='attachments_v2'),
     path('file/presigned_url/',attachment_views.PresignedUrlView.as_view(),name='presigned_url'),    
 ]   
