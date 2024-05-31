@@ -34,6 +34,10 @@ class AttachmentViews(AuthenticateView):
     #         'file_name': file_origin_name,
     #         'file_size': file_size,
     #     }})
+    def get(self, request, *args, **kwargs):
+        conversation_id = request.GET.get('conversation_id')
+        attachments = Attachment.objects.filter(conversation_id=conversation_id).values('attachment_id', 'file_name', 'file_type', 'file_size', 'file_url', 'uploaded_at', 'uploaded_by')
+        
     def post(self, request, *args, **kwargs):
         uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(request.META.get('HTTP_AUTHORIZATION')))
         file_name = request.data.get('file_name')

@@ -51,5 +51,6 @@ urlpatterns = [
     path('conversation/<str:conversation_id>/message/',conversation_views.ConversationMessageView.as_view(),name='conversation_message'),
     path('file/attachments/',attachment_views.AttachmentViews.as_view(),name='attachments'),
     path('file/attachment_v2/',attachment_views.AttachmentViews.as_view(),name='attachments_v2'),
+    path('<int:conversation_id>/file/',attachment_views.AttachmentViews.as_view(),name='attachments'),
     path('file/presigned_url/',attachment_views.PresignedUrlView.as_view(),name='presigned_url'),    
 ]   

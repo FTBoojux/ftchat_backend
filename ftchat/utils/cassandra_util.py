@@ -95,7 +95,7 @@ def get_conversation_message_list(conversation_id, uid, page_size=10, paging_sta
 def get_last_message(conversation_id):
     statement = SimpleStatement(
         """
-        SELECT conversation_id, content
+        SELECT conversation_id, content, message_type
         FROM chat_message
         WHERE conversation_id = %s
         """
@@ -104,4 +104,4 @@ def get_last_message(conversation_id):
     rows = result_set.current_rows
     if len(rows) == 0:
         return ""
-    return rows[0].content
+    return rows[0]

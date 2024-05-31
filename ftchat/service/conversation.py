@@ -29,7 +29,10 @@ def get_conversations(uid):
                     _conversation['conversation_id'] = str(conversation['id']) 
             # Define _conversation before accessing its 'conversation_id' key
             message = cassandra_util.get_last_message(_conversation.get('conversation_id'))
-            _conversation['last_message'] = message
+            if message.message_type == 1:
+                _conversation['last_message'] = message.content
+            elif message.message_type == 2:
+                _conversation['last_message'] = '[文件消息]'
             conversations.append(_conversation)
     return conversations
 
