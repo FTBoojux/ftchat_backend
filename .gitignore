@@ -4,6 +4,7 @@ ftchat/__pycache__/*
 ftchat/migrations/__pycache__/__init__.cpython-310.pyc
 ftchat_backend/__pycache__/*
 .vscode/*
+__pycache__/*
 ftchat/views/__pycache__/*
 ftchat/migrations/*
 ftchat/utils/__pycache__/*

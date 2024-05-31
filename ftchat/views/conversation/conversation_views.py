@@ -1,6 +1,7 @@
 import json
 from ftchat.views.AuthenticateView import AuthenticateView
 from ftchat.service import conversation as conversation_service
+from ftchat.service import attachment as attachment_service
 from ftchat.utils import jwt_util as jwt_utils
 from django.http import JsonResponse
 import base64
@@ -36,3 +37,20 @@ class ConversationMessageView(AuthenticateView):
         pass
     def put(self, request, conversation_id):
         pass    
+
+class ConversationFilesView(AuthenticateView):
+    def get(self, request, conversation_id):
+        token = request.META.get('HTTP_AUTHORIZATION')
+        uid = jwt_utils.get_uid_from_jwt(jwt_utils.get_token_from_bearer(token))
+        page_num = int(request.GET.get('page_num'))
+        page_size = int(request.GET.get('page_size',10))
+        if not conversation_service.check_conversation_permission(uid,conversation_id):
+            return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
+        files = attachment_service.get_files_list(conversation_id,page_size,page_num)
+        return JsonResponse({'result':'success','message':'','code':200,'data':{'files':files}})
+    def post(self, request, conversation_id):
+        pass
+    def delete(self, request, conversation_id):
+        pass
+    def put(self, request, conversation_id):
+        pass
