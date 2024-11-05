@@ -3,6 +3,7 @@ from ftchat.utils import cassandra_util
 from django.http import JsonResponse
 from django.utils import timezone
 from ftchat.service import account as account_service
+from ftchat.celery import save_chat_message_to_es
 import datetime
 
 def get_conversations(uid):
@@ -56,6 +57,8 @@ def save_message(uid,conversation_id,message,type):
         return JsonResponse({'result':'fail','message':'用户没有会话权限','code':403,'data':''})
     Conversation.objects.filter(id=conversation_id).update(last_message_at=timezone.now())
     message_id,timestamp = cassandra_util.save_conversation_message(conversation_id,uid,message,conversation.type=='G',type)
+    # 异步保存到ES
+    save_chat_message_to_es.delay(message_id, conversation_id, uid, message, conversation.type=='G', timestamp, type)
     # 构建返回的消息
     message = {
         'conversation_id':conversation_id,

@@ -14,7 +14,8 @@ from pathlib import Path
 
 from ftchat import applicationConf
 from ftchat.applicationConf import mail_host, mail_port, mail_password, redis_password, redis_host, redis_port, \
-database_engine, database_name, database_user, database_password, database_host, database_port
+database_engine, database_name, database_user, database_password, database_host, database_port, elastic_host, elastic_port, \
+elastic_username, elastic_password, cassandra_host, cassandra_port, cassandra_username, cassandra_password
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'ftchat',
-    'corsheaders'
+    'corsheaders',
+    'django_elasticsearch_dsl'
 ]
 
 MIDDLEWARE = [
@@ -155,12 +157,41 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = '1647284718'
 EMAIL_HOST_PASSWORD = mail_password
 
+REDIS_URL = 'redis://:{}@{}:{}/0'.format(redis_password,redis_host,redis_port)
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://:{}@{}:{}/0'.format(redis_password,redis_host,redis_port),
+        'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+}
+
+CELERY_BROKER_URL = REDIS_URL  # 使用 Redis 作为消息代理
+CELERY_RESULT_BACKEND = REDIS_URL
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': [{
+            'host': elastic_host,
+            'port': elastic_port,
+            'http_auth': (elastic_username, elastic_password)
+        }],
+    },
+}
+# 在Django的settings.py中添加配置
+CASSANDRA_CONFIG = {
+    'hosts': [cassandra_host],
+    'username': cassandra_username,
+    'password': cassandra_password,
+    'port': 9042,
+    'use_ssl': False
+}
+
+ES_CONFIG = {
+    'hosts': [elastic_host+':'+str(elastic_port)],
+    'username': elastic_username,
+    'password': elastic_password
 }

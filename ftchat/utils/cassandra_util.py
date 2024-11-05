@@ -105,3 +105,14 @@ def get_last_message(conversation_id):
     if len(rows) == 0:
         return ""
     return rows[0]
+
+def get_gpt_message_all():
+    statement = SimpleStatement(
+        """
+        SELECT message_id, conversation_id, srkey, sender, receiver, content_type, content, send_at, read, sentiment_analysis_result
+        FROM gpt_message
+        """
+    )
+    result_set = session.execute(statement)
+    rows = result_set.current_rows
+    return rows
