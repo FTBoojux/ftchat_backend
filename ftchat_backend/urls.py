@@ -21,6 +21,7 @@ from ftchat.views.account import user as account_views
 from ftchat.views.gpt import gpt_views
 from ftchat.views.conversation import conversation_views
 from ftchat.views.message import message_views
+from ftchat.views.message import message_es_view as message_es_views
 from ftchat.views.group import group_views
 from ftchat.views.group import group_members_view as group_members_views
 from ftchat.views.attachment import attachment_views
@@ -49,6 +50,7 @@ urlpatterns = [
     path('groups/<str:group_id>/members/',group_members_views.GroupMembersView.as_view(),name='group_members'),
     path('conversation/<str:conversation_id>/participants/',group_members_views.GroupMembersView.as_view(),name='conversation_participants'),
     path('conversation/<str:conversation_id>/message/',conversation_views.ConversationMessageView.as_view(),name='conversation_message'),
+    path('conversation/<str:conversation_id>/message_es/',message_es_views.MessageEsView.as_view(),name='conversation_message_es'),
     path('conversation/<str:conversation_id>/files/',conversation_views.ConversationFilesView.as_view(),name='conversation_files'),
     path('file/attachments/',attachment_views.AttachmentViews.as_view(),name='attachments'),
     path('file/attachment_v2/',attachment_views.AttachmentViews.as_view(),name='attachments_v2'),
