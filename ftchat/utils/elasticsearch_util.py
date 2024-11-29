@@ -27,9 +27,9 @@ def save_conversation_message(message_id, conversation_id, uid, message, is_grou
     }
     es_client.index(index='chat_message', id=message_id, body=document)
 
-def conversation_message_search(conversation_id, keyword, pageNum=1, pageSize=10):
+def conversation_message_search(conversation_id, keyword, page_num=1, page_size=10):
     # 计算起始位置
-    from_index = (pageNum - 1) * pageSize
+    from_index = (page_num - 1) * page_size
 
     # 构建查询
     query = {
@@ -60,7 +60,7 @@ def conversation_message_search(conversation_id, keyword, pageNum=1, pageSize=10
     search_body = {
         "query": query,
         "from": from_index,
-        "size": pageSize,
+        "size": page_size,
         "sort": [
             {
                 "data.timestamp": {
